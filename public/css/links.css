@@ -1,0 +1,63 @@
+/* links.weirdnet.org — diary/log vibe (web 1.0) */
+
+body {
+  font-family: "Courier New", Courier, monospace;
+}
+
+h1 {
+  margin: 0 0 6px 0;
+  font-size: 22px;
+}
+
+.small { font-size: 12px; }
+
+hr {
+  border: 0;
+  border-top: 1px dotted #000;
+}
+
+a { color: #0000ee; }
+a:visited { color: #551a8b; }
+
+/* header bar */
+.topbar {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.topbar b { font-weight: bold; }
+
+/* list becomes a log */
+#list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+#list li {
+  padding: 10px 0;
+  border-bottom: 1px dotted #000;
+}
+
+#list li:last-child {
+  border-bottom: 0;
+}
+
+/* make dates feel like a log stamp */
+.datestamp {
+  display: inline-block;
+  padding: 0 4px;
+  border: 1px solid #000;
+  font-size: 11px;
+}
+
+/* search input old-school */
+input[type="text"] {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  border: 1px solid #000;
+  padding: 2px 4px;
+}
+
+/* optional: tighter content */
+p { margin: 8px 0; }

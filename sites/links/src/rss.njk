@@ -1,0 +1,31 @@
+---
+permalink: "rss.xml"
+eleventyExcludeFromCollections: true
+---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>weirdnet links</title>
+    <link>https://links.weirdnet.org/</link>
+    <description>link dump from weirdnet</description>
+    <language>en</language>
+
+    <atom:link href="https://links.weirdnet.org/rss.xml" rel="self" type="application/rss+xml"/>
+
+    {% if (links | length) > 0 %}
+    <lastBuildDate>{{ links[0].addedAt | rfc822 }}</lastBuildDate>
+    {% endif %}
+
+    {% for item in links | slice(0, 50) %}
+    <item>
+      <title>{{ item.title | xml }}</title>
+      <link>{{ item.url | xml }}</link>
+      <guid isPermaLink="true">{{ item.url | xml }}</guid>
+      <description>{{ item.desc | xml }}</description>
+      <pubDate>{{ item.addedAt | rfc822 }}</pubDate>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>
+

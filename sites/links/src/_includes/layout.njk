@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title or "weirdnet links" }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/links.css">
+</head>
+<body>
+  <div class="wrap">
+    <table width="100%" cellspacing="0" cellpadding="8" class="box">
+      <tr>
+        <td valign="top">
+
+          <div class="topbar">
+            <b>[weirdnet links]</b>
+            &nbsp;|&nbsp; <a href="/">newest</a>
+            &nbsp;|&nbsp; <a href="/archive/">archive</a>
+            &nbsp;|&nbsp; <a href="/rss.xml">rss</a>
+            &nbsp;|&nbsp; <a href="/atom.xml">atom</a>
+            &nbsp;|&nbsp; <a href="https://directory.weirdnet.org/">directory</a>
+          </div>
+
+          <hr>
+
+          {{ content | safe }}
+
+          <hr>
+
+          <div class="footer">
+            Made by <a href="https://pablo.space" rel="noreferrer"><b>Pablo Murad</b></a>, since 1987 — no rights reserved.
+            <div class="footer-warning">
+              <i>all incoming connections to weirdnet.org are monitored for security and provenance. no scammers! - pablo</i>
+            </div>
+          </div>
+
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  {% if includeFilterJs %}
+  <script src="/js/filter.js"></script>
+  {% endif %}
+</body>
+</html>

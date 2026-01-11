@@ -1,0 +1,20 @@
+---
+permalink: "sitemap.xml"
+eleventyExcludeFromCollections: true
+---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {% set base = "https://links.weirdnet.org" %}
+  {% for item in collections.all %}
+    {% if item.page and item.page.url and item.page.outputPath %}
+      {% set url = item.page.url %}
+      {% set out = item.page.outputPath %}
+      {% if out.endsWith(".html") and url != "/404.html" %}
+  <url>
+    <loc>{{ (base ~ url) | escape }}</loc>
+  </url>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+</urlset>

@@ -1,0 +1,49 @@
+---
+layout: layout.njk
+includeFilterJs: true
+pagination:
+  data: links
+  size: 30
+  alias: items
+permalink: "{% if pagination.pageNumber == 0 %}index.html{% else %}page/{{ pagination.pageNumber + 1 }}/index.html{% endif %}"
+eleventyComputed:
+  title: "{% if pagination.pageNumber == 0 %}weirdnet links{% else %}weirdnet links — page {{ pagination.pageNumber + 1 }}{% endif %}"
+---
+
+<h1>Link Dump</h1>
+<p class="small"><i>...i found this and dropped it here.</i></p>
+
+<p class="small">
+  <b>today:</b> {{ stats.todayCount }}
+  | <b>this month:</b> {{ stats.thisMonthCount }}
+  | <b>latest:</b> {{ stats.latestDate }}
+  | <b>total:</b> {{ stats.total }}
+</p>
+
+<p class="small">
+  <input id="q" type="text" size="28" placeholder="filter this page...">
+</p>
+
+<hr>
+
+<ul id="list">
+{% for item in items %}
+  <li data-text="{{ (item.title ~ ' ' ~ item.desc ~ ' ' ~ item.url) | lower }}">
+    <span class="datestamp">{{ item.addedAt }}</span><br>
+    <a href="{{ item.url }}" rel="noreferrer">{{ item.title }}</a><br>
+    <span class="small">{{ item.desc }}</span>
+  </li>
+{% endfor %}
+</ul>
+
+<hr>
+
+<p class="small">
+  {% if pagination.href.previous %}
+    <a href="{{ pagination.href.previous }}">&laquo; newer</a>
+  {% endif %}
+  {% if pagination.href.next %}
+    {% if pagination.href.previous %} | {% endif %}
+    <a href="{{ pagination.href.next }}">older &raquo;</a>
+  {% endif %}
+</p>

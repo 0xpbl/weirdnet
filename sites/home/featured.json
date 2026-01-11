@@ -1,0 +1,9 @@
+{
+  "mode": "auto",
+  "manual": {
+    "url": "https://example.com",
+    "title": "Example Site",
+    "description": "Replace this with your featured pick.",
+    "tags": ["weird", "archive"]
+  }
+}

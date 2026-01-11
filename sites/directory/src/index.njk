@@ -1,0 +1,23 @@
+---
+layout: layout.njk
+title: "weirdnet directory"
+---
+
+<h1>Directory</h1>
+<p class="small"><i>...it's a wild, wild web.</i></p>
+
+<p>
+  Total: <b>{{ links | length }}</b> sites.
+</p>
+
+<hr>
+
+<ul>
+{% for item in links %}
+  <li>
+    <a href="{{ item.url }}" rel="noreferrer">{{ item.title }}</a>
+    <span class="small">[{{ item.category }} — {{ item.addedAt }}]</span><br>
+    <span class="small">{{ item.desc }}</span>
+  </li>
+{% endfor %}
+</ul>

@@ -1,0 +1,24 @@
+---
+layout: layout.njk
+pagination:
+  data: months
+  size: 1
+  alias: m
+permalink: "{{ m.year }}/{{ m.month }}/index.html"
+eleventyComputed:
+  title: "Archive: {{ m.year }}/{{ m.month }}"
+---
+
+<h1>{{ m.year }}/{{ m.month }}</h1>
+<p class="small"><a href="/archive/">&laquo; back to archive</a></p>
+<hr>
+
+<ul>
+{% for item in m.items %}
+  <li>
+    <span class="small">{{ item.addedAt }}</span><br>
+    <a href="{{ item.url }}" rel="noreferrer">{{ item.title }}</a><br>
+    <span class="small">{{ item.desc }}</span>
+  </li>
+{% endfor %}
+</ul>

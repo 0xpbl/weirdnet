@@ -1,0 +1,35 @@
+body {
+  font-family: Times, "Times New Roman", serif;
+  background: #ffffff;
+  color: #000000;
+}
+
+a { color: #0000ee; }
+a:visited { color: #551a8b; }
+
+.wrap { max-width: 980px; margin: 0 auto; padding: 12px; }
+
+.box {
+  border: 1px solid #000;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.small { font-size: 12px; }
+
+hr { border: 0; border-top: 1px solid #000; }
+
+code, pre { font-family: "Courier New", Courier, monospace; }
+
+.footer {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.footer-warning {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #b00000;
+}
+

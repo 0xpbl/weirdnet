@@ -1,0 +1,30 @@
+---
+permalink: "atom.xml"
+eleventyExcludeFromCollections: true
+---
+
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>weirdnet links</title>
+  <id>https://links.weirdnet.org/</id>
+
+  <link href="https://links.weirdnet.org/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://links.weirdnet.org/" rel="alternate" type="text/html"/>
+
+  {% set updated = "2026-01-11T00:00:00Z" %}
+  {% if (links | length) > 0 and links[0].addedAt %}
+    {% set updated = (links[0].addedAt | rfc3339) %}
+  {% endif %}
+  <updated>{{ updated }}</updated>
+
+  {% for item in links | slice(0, 50) %}
+  <entry>
+    <title>{{ item.title | xml }}</title>
+    <id>{{ item.url | xml }}</id>
+    <link href="{{ item.url | xml }}" rel="alternate" type="text/html"/>
+    <updated>{{ item.addedAt | rfc3339 }}</updated>
+    <published>{{ item.addedAt | rfc3339 }}</published>
+    <summary type="text">{{ item.desc | xml }}</summary>
+  </entry>
+  {% endfor %}
+</feed>

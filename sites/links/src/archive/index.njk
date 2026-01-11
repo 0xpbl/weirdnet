@@ -1,0 +1,17 @@
+---
+layout: layout.njk
+title: "Archive"
+---
+
+<h1>Archive</h1>
+<p class="small"><i>...months.</i></p>
+<hr>
+
+<ul>
+{% for m in months %}
+  <li>
+    <a href="/{{ m.year }}/{{ m.month }}/">{{ m.year }}/{{ m.month }}</a>
+    <span class="small">({{ m.items | length }})</span>
+  </li>
+{% endfor %}
+</ul>

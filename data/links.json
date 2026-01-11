@@ -1,0 +1,1248 @@
+[
+  {
+    "id": "the-webcomic-list",
+    "url": "https://www.thewebcomiclist.com",
+    "title": "The Webcomic List",
+    "desc": "A long-running directory of webcomics and creators.",
+    "category": "directories",
+    "tags": [
+      "webcomics",
+      "creators",
+      "directory"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "yellow5",
+    "url": "https://yellow5.com",
+    "title": "yellow5.com",
+    "desc": "A minimalist and surreal personal website from the early web era.",
+    "category": "weird",
+    "tags": [
+      "minimal",
+      "surreal",
+      "personal"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "milk",
+    "url": "https://milk.com",
+    "title": "milk.com",
+    "desc": "An eccentric personal portal that embodies early web weirdness.",
+    "category": "weird",
+    "tags": [
+      "portal",
+      "eccentric",
+      "classic-web"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "info-cern",
+    "url": "https://info.cern.ch",
+    "title": "info.cern.ch",
+    "desc": "The restored first website ever published on the World Wide Web.",
+    "category": "archives",
+    "tags": [
+      "history",
+      "www",
+      "cern"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "internet-archive",
+    "url": "https://archive.org",
+    "title": "Internet Archive",
+    "desc": "A massive digital library and the Wayback Machine for browsing the web's past.",
+    "category": "archives",
+    "tags": [
+      "wayback",
+      "preservation",
+      "library"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "awaymessage-lol",
+    "url": "https://awaymessage.lol",
+    "title": "awaymessage.lol",
+    "desc": "A nostalgic tribute to instant messenger away messages.",
+    "category": "weird",
+    "tags": [
+      "nostalgia",
+      "im",
+      "culture"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "cameronsworld",
+    "url": "https://www.cameronsworld.net",
+    "title": "Cameron's World",
+    "desc": "A massive collage built from archived GeoCities fragments.",
+    "category": "net-art",
+    "tags": [
+      "geocities",
+      "collage",
+      "nostalgia"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "oocities",
+    "url": "https://www.oocities.org",
+    "title": "OoCities",
+    "desc": "A browsable mirror of archived GeoCities pages.",
+    "category": "archives",
+    "tags": [
+      "geocities",
+      "mirror",
+      "archive"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "geocities-restorativland",
+    "url": "https://geocities.restorativland.org",
+    "title": "GeoCities (Restorativland)",
+    "desc": "Restored GeoCities neighborhoods recreated for exploration.",
+    "category": "archives",
+    "tags": [
+      "geocities",
+      "neighborhoods",
+      "restoration"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "blades-place",
+    "url": "https://www.bladesplace.id.au",
+    "title": "Blades Place",
+    "desc": "A classic personal homepage packed with links and sections.",
+    "category": "weird",
+    "tags": [
+      "homepage",
+      "links",
+      "classic-web"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "restorativland",
+    "url": "https://restorativland.org",
+    "title": "Restorativland",
+    "desc": "A preservation project rescuing lost and abandoned websites.",
+    "category": "archives",
+    "tags": [
+      "preservation",
+      "abandoned",
+      "restoration"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "textfiles",
+    "url": "http://textfiles.com",
+    "title": "Textfiles.com",
+    "desc": "A classic archive of BBS-era text files and early internet culture.",
+    "category": "archives",
+    "tags": [
+      "bbs",
+      "textfiles",
+      "culture"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "wiby",
+    "url": "https://wiby.me",
+    "title": "Wiby",
+    "desc": "A search engine focused on lightweight, classic-style websites.",
+    "category": "search",
+    "tags": [
+      "search",
+      "lightweight",
+      "classic-web"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "gorenight",
+    "url": "http://gorenight.com",
+    "title": "gorenight.com",
+    "desc": "Horror and gore content; enter at your own risk.",
+    "category": "nsfw",
+    "tags": [
+      "horror",
+      "gore",
+      "warning"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "shaddy-dev",
+    "url": "https://shaddy.dev",
+    "title": "shaddy.dev",
+    "desc": "An indie developer's personal website with experimental flair.",
+    "category": "weird",
+    "tags": [
+      "indie",
+      "developer",
+      "experimental"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "marginalia-search",
+    "url": "https://marginalia-search.com",
+    "title": "Marginalia Search",
+    "desc": "An indie search engine prioritizing non-commercial websites.",
+    "category": "search",
+    "tags": [
+      "indie",
+      "non-commercial",
+      "small-web"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "marginalia-search-github",
+    "url": "https://github.com/MarginaliaSearch/MarginaliaSearch",
+    "title": "Marginalia Search (GitHub)",
+    "desc": "Open-source codebase for Marginalia, a search engine focused on text-oriented, non-commercial, and \"small web\" websites.",
+    "category": "tools",
+    "tags": [
+      "opensource",
+      "search",
+      "github"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "search-my-site",
+    "url": "https://searchmysite.net",
+    "title": "Search My Site",
+    "desc": "A search engine for personal websites and digital gardens.",
+    "category": "search",
+    "tags": [
+      "personal-sites",
+      "digital-gardens",
+      "search"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "neocities",
+    "url": "https://neocities.org",
+    "title": "Neocities",
+    "desc": "Static site hosting inspired by the spirit of GeoCities.",
+    "category": "hosting",
+    "tags": [
+      "static",
+      "geocities",
+      "hosting"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "webring-gg",
+    "url": "https://www.webring.gg",
+    "title": "webring.gg",
+    "desc": "Tools and discovery for modern webrings.",
+    "category": "webrings",
+    "tags": [
+      "webring",
+      "tools",
+      "discovery"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "arngren",
+    "url": "https://arngren.net",
+    "title": "ARNGREN.net",
+    "desc": "Infamously chaotic Norwegian product catalog website, often cited as a pure example of early web design excess.",
+    "category": "weird",
+    "tags": [
+      "chaotic",
+      "catalog",
+      "maximalism"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "million-dollar-homepage",
+    "url": "http://www.milliondollarhomepage.com",
+    "title": "The Million Dollar Homepage",
+    "desc": "A legendary 2005 internet project that sold one million pixels of advertising space for one dollar each.",
+    "category": "weird",
+    "tags": [
+      "history",
+      "ads",
+      "pixels"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "documenting-reality",
+    "url": "https://www.documentingreality.com",
+    "title": "Documenting Reality",
+    "desc": "Graphic real-world content; viewer discretion advised.",
+    "category": "nsfw",
+    "tags": [
+      "graphic",
+      "warning",
+      "gore"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "lingscars-museum",
+    "url": "https://museum.lingscars.com",
+    "title": "LINGsCARS Museum",
+    "desc": "An archived \"museum\" version of the famously maximalist LINGsCARS website, preserved after a major redesign.",
+    "category": "archives",
+    "tags": [
+      "archive",
+      "maximalism",
+      "web-design"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "poolsuite",
+    "url": "https://poolsuite.net",
+    "title": "Poolsuite",
+    "desc": "A retro-styled online radio experience streaming summer-themed music and visuals 24/7 (formerly Poolside FM).",
+    "category": "radio",
+    "tags": [
+      "retro",
+      "music",
+      "radio"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "windows93",
+    "url": "https://www.windows93.net",
+    "title": "WINDOWS93",
+    "desc": "A browser-based fake operating system parody inspired by 90s Windows interfaces, packed with games and web experiments.",
+    "category": "toys",
+    "tags": [
+      "fake-os",
+      "90s",
+      "experiments"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "neal-fun",
+    "url": "https://neal.fun",
+    "title": "Neal.fun",
+    "desc": "A collection of playful, interactive web experiments and mini-projects exploring ideas, data, and curiosity.",
+    "category": "toys",
+    "tags": [
+      "interactive",
+      "experiments",
+      "playful"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "radio-garden",
+    "url": "https://radio.garden",
+    "title": "Radio Garden",
+    "desc": "An interactive globe that lets you explore and listen to live radio stations from around the world.",
+    "category": "radio",
+    "tags": [
+      "radio",
+      "world",
+      "map"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "somnolescent-districts",
+    "url": "https://archives.somnolescent.net/web/districts/about/",
+    "title": "Somnolescent Districts",
+    "desc": "A curated archive and directory of interconnected Neocities sites organized into fictional \"districts.\"",
+    "category": "directories",
+    "tags": [
+      "neocities",
+      "archive",
+      "fiction"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "somnolescent",
+    "url": "https://somnolescent.net",
+    "title": "Somnolescent",
+    "desc": "A fictional universe built across interconnected personal websites.",
+    "category": "weird",
+    "tags": [
+      "fiction",
+      "universe",
+      "personal-sites"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "nekoweb",
+    "url": "https://nekoweb.org",
+    "title": "Nekoweb",
+    "desc": "A community-driven platform for retro-style personal sites.",
+    "category": "hosting",
+    "tags": [
+      "community",
+      "retro",
+      "personal-sites"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "one-mb-club",
+    "url": "https://1mb.club",
+    "title": "1MB Club",
+    "desc": "A directory of websites that keep their homepage under 1MB.",
+    "category": "directories",
+    "tags": [
+      "lightweight",
+      "performance",
+      "directory"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "curlie-pt",
+    "url": "https://curlie.org/pt",
+    "title": "Curlie (Portuguese)",
+    "desc": "A human-edited web directory, successor to DMOZ, presented here in its Portuguese-language version.",
+    "category": "directories",
+    "tags": [
+      "dmoz",
+      "human-edited",
+      "directory"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "tilde-town",
+    "url": "https://tilde.town",
+    "title": "tilde.town",
+    "desc": "A shared Unix server for learning, writing, and publishing.",
+    "category": "hosting",
+    "tags": [
+      "unix",
+      "community",
+      "writing"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "wayward-web",
+    "url": "https://waywardweb.org",
+    "title": "Wayward Web",
+    "desc": "A hub for discovering indie and personal websites.",
+    "category": "directories",
+    "tags": [
+      "indie",
+      "discovery",
+      "personal-sites"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "hotline-webring",
+    "url": "https://hotlinewebring.club/",
+    "title": "Hotline Webring",
+    "desc": "A nostalgic-themed webring connecting personal sites.",
+    "category": "webrings",
+    "tags": [
+      "nostalgia",
+      "webring",
+      "personal-sites"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "webring-studio",
+    "url": "https://app.webringstudio.com",
+    "title": "Webring Studio",
+    "desc": "A modern platform for creating, managing, and discovering webrings for independent websites.",
+    "category": "webrings",
+    "tags": [
+      "webring",
+      "platform",
+      "management"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "webri-ng",
+    "url": "https://webri.ng",
+    "title": "webri.ng",
+    "desc": "A lightweight service that enables anyone to create and run a webring without maintaining their own infrastructure.",
+    "category": "webrings",
+    "tags": [
+      "webring",
+      "lightweight",
+      "service"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "webcomicring",
+    "url": "https://webcomicring.org",
+    "title": "Webcomic Ring",
+    "desc": "A webring dedicated to independent webcomics.",
+    "category": "webrings",
+    "tags": [
+      "webring",
+      "webcomics",
+      "indie"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "online-books-page",
+    "url": "https://onlinebooks.library.upenn.edu/",
+    "title": "The Online Books Page",
+    "desc": "A curated index of free online books.",
+    "category": "libraries",
+    "tags": [
+      "books",
+      "library",
+      "index"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "sacred-texts",
+    "url": "https://sacred-texts.com/",
+    "title": "Internet Sacred Text Archive",
+    "desc": "Public domain religious and mythological texts.",
+    "category": "libraries",
+    "tags": [
+      "public-domain",
+      "religion",
+      "mythology"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "rastko",
+    "url": "https://rastko.net",
+    "title": "Rastko",
+    "desc": "A digital library focused on cultural and historical works.",
+    "category": "libraries",
+    "tags": [
+      "culture",
+      "history",
+      "library"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "preprints-readingrooms",
+    "url": "https://preprints.readingroo.ms",
+    "title": "PrePrints ReadingRoo.ms",
+    "desc": "A curated collection of Project Gutenberg preprints and experimental texts not included in the main catalog.",
+    "category": "libraries",
+    "tags": [
+      "gutenberg",
+      "preprints",
+      "experimental"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "readingrooms",
+    "url": "https://readingroo.ms",
+    "title": "ReadingRoo.ms",
+    "desc": "Curated public-domain and experimental publishing.",
+    "category": "libraries",
+    "tags": [
+      "publishing",
+      "public-domain",
+      "experimental"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "future-of-the-internet",
+    "url": "https://futureoftheinternet.org",
+    "title": "Future of the Internet",
+    "desc": "Projects and reflections on the future of the open web.",
+    "category": "essays",
+    "tags": [
+      "open-web",
+      "projects",
+      "future"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "foldoc",
+    "url": "https://foldoc.org",
+    "title": "FOLDOC",
+    "desc": "An old-school dictionary of computing and technical terminology.",
+    "category": "standards",
+    "tags": [
+      "dictionary",
+      "computing",
+      "terminology"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "jargon-file",
+    "url": "https://www.catb.org/jargon/html/",
+    "title": "The Jargon File",
+    "desc": "A historic glossary of hacker slang and tech folklore.",
+    "category": "standards",
+    "tags": [
+      "hacker",
+      "slang",
+      "history"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "eric-s-raymond",
+    "url": "https://www.catb.org/esr/",
+    "title": "Eric S. Raymond",
+    "desc": "Essays and writings on open source and hacker culture.",
+    "category": "essays",
+    "tags": [
+      "open-source",
+      "essays",
+      "culture"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "rfc-editor",
+    "url": "https://www.rfc-editor.org",
+    "title": "RFC Editor",
+    "desc": "The official archive of internet standards and technical documents.",
+    "category": "standards",
+    "tags": [
+      "rfc",
+      "standards",
+      "internet"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "16colo-rs",
+    "url": "https://16colo.rs/",
+    "title": "16colo.rs",
+    "desc": "ANSI and ASCII art packs from the textmode scene.",
+    "category": "net-art",
+    "tags": [
+      "ansi",
+      "ascii",
+      "textmode"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "asciiart-eu",
+    "url": "https://www.asciiart.eu/",
+    "title": "ASCII Art Archive",
+    "desc": "A large collection of copy-paste ASCII art.",
+    "category": "net-art",
+    "tags": [
+      "ascii",
+      "art",
+      "text"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "web-design-museum",
+    "url": "https://www.webdesignmuseum.org/",
+    "title": "Web Design Museum",
+    "desc": "An archive of web, software, and interface design from the 1990s and 2000s.",
+    "category": "archives",
+    "tags": [
+      "design",
+      "interfaces",
+      "history"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "optical-toys",
+    "url": "https://optical.toys",
+    "title": "Optical Toys",
+    "desc": "Interactive optical illusions and visual toys.",
+    "category": "toys",
+    "tags": [
+      "illusions",
+      "interactive",
+      "visual"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "tholman",
+    "url": "https://tholman.com",
+    "title": "tholman.com",
+    "desc": "A collection of playful creative coding experiments.",
+    "category": "net-art",
+    "tags": [
+      "creative-coding",
+      "experiments",
+      "playful"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "the-useless-web",
+    "url": "https://theuselessweb.com",
+    "title": "The Useless Web",
+    "desc": "A button that sends you to random pointless websites.",
+    "category": "toys",
+    "tags": [
+      "random",
+      "single-serving",
+      "button"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "click-the-red-button",
+    "url": "https://clicktheredbutton.com",
+    "title": "Click the Red Button",
+    "desc": "One click launches you into internet randomness.",
+    "category": "toys",
+    "tags": [
+      "random",
+      "single-serving",
+      "button"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "creative-commons",
+    "url": "https://creativecommons.org",
+    "title": "Creative Commons",
+    "desc": "Free licenses that let creators share work with clear usage rights.",
+    "category": "standards",
+    "tags": [
+      "licenses",
+      "copyright",
+      "sharing"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "pointerpointer",
+    "url": "https://pointerpointer.com/",
+    "title": "Pointer Pointer",
+    "desc": "Finds a photo of someone pointing at your cursor.",
+    "category": "toys",
+    "tags": [
+      "single-serving",
+      "joke",
+      "cursor"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "eelslap",
+    "url": "https://eelslap.com/",
+    "title": "Eel Slap",
+    "desc": "Slap a man with an eel using your mouse.",
+    "category": "toys",
+    "tags": [
+      "single-serving",
+      "mouse",
+      "silly"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "cat-bounce",
+    "url": "https://cat-bounce.com/",
+    "title": "Cat Bounce",
+    "desc": "Bounce cats around your screen with physics.",
+    "category": "toys",
+    "tags": [
+      "cats",
+      "physics",
+      "interactive"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "omfgdogs",
+    "url": "https://www.omfgdogs.com",
+    "title": "OMFGDOGS",
+    "desc": "Endless rainbow dogs running forever.",
+    "category": "toys",
+    "tags": [
+      "loop",
+      "rainbow",
+      "dogs"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "scream-into-the-void",
+    "url": "https://screamintothevoid.com",
+    "title": "Scream Into the Void",
+    "desc": "Write something and let it disappear.",
+    "category": "toys",
+    "tags": [
+      "writing",
+      "ephemeral",
+      "catharsis"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "zoomquilt",
+    "url": "https://zzz.zoomquilt.org/",
+    "title": "Zoomquilt",
+    "desc": "An infinite zoom artwork that loops forever.",
+    "category": "net-art",
+    "tags": [
+      "infinite",
+      "zoom",
+      "art"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "zoomquilt-2",
+    "url": "https://zzz.zoomquilt2.com/",
+    "title": "Zoomquilt 2",
+    "desc": "A collaborative sequel to the infinite zoom concept.",
+    "category": "net-art",
+    "tags": [
+      "infinite",
+      "zoom",
+      "collaboration"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "nikkki",
+    "url": "https://www.nikkki.net",
+    "title": "nikkki.net",
+    "desc": "Portfolio of infinite zoom and generative artworks.",
+    "category": "net-art",
+    "tags": [
+      "generative",
+      "portfolio",
+      "zoom"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "shouldseethis-websites",
+    "url": "https://shouldseethis.com/websites/",
+    "title": "SHOULDSEETHIS",
+    "desc": "A curated collection of interesting and well-crafted websites.",
+    "category": "directories",
+    "tags": [
+      "curation",
+      "design",
+      "websites"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "gifcities",
+    "url": "https://gifcities.org",
+    "title": "GifCities",
+    "desc": "A search engine for animated GIFs rescued from GeoCities.",
+    "category": "archives",
+    "tags": [
+      "gifs",
+      "geocities",
+      "search"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "lhohq",
+    "url": "https://www.lhohq.info",
+    "title": "LHOHQ",
+    "desc": "A notorious internet mystery and rabbit hole.",
+    "category": "weird",
+    "tags": [
+      "mystery",
+      "rabbit-hole",
+      "legend"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "nyan-cat",
+    "url": "https://www.nyan.cat",
+    "title": "Nyan Cat",
+    "desc": "The official infinite Nyan Cat experience.",
+    "category": "toys",
+    "tags": [
+      "meme",
+      "loop",
+      "music"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "experiments-with-google",
+    "url": "https://experiments.withgoogle.com/experiments",
+    "title": "Experiments with Google",
+    "desc": "A gallery of creative browser-based experiments.",
+    "category": "net-art",
+    "tags": [
+      "gallery",
+      "experiments",
+      "creative"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "the-forest",
+    "url": "https://theforest.link/",
+    "title": "The Forest",
+    "desc": "A one-button detour into someone's website with no map and no algorithm.",
+    "category": "directories",
+    "tags": [
+      "discovery",
+      "random",
+      "detour"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "cloudhiker",
+    "url": "https://cloudhiker.net/",
+    "title": "Cloudhiker",
+    "desc": "Curated random-site exploration designed to bring back classic web discovery.",
+    "category": "directories",
+    "tags": [
+      "discovery",
+      "curated",
+      "random"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "wildwild-directory",
+    "url": "https://wildwild.directory/",
+    "title": "The Wild Wild Web",
+    "desc": "A human-curated directory of non-commercial websites worth your attention.",
+    "category": "directories",
+    "tags": [
+      "curation",
+      "non-commercial",
+      "small-web"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "ooh-directory",
+    "url": "https://ooh.directory/",
+    "title": "ooh.directory",
+    "desc": "A blog directory with categories, search, and random browsing.",
+    "category": "directories",
+    "tags": [
+      "blogs",
+      "directory",
+      "search"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "indieblog-page",
+    "url": "https://indieblog.page/",
+    "title": "indieblog.page",
+    "desc": "Jump to a random post from a personal blog on the IndieWeb.",
+    "category": "toys",
+    "tags": [
+      "blogs",
+      "random",
+      "indieweb"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "blog-of-the-day",
+    "url": "https://blogofthe.day/",
+    "title": "blogofthe.day",
+    "desc": "A daily featured indie blog to help you explore beyond the algorithm.",
+    "category": "directories",
+    "tags": [
+      "featured",
+      "blogs",
+      "daily"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "randomblog-rocks",
+    "url": "https://randomblog.rocks/",
+    "title": "Random Blog",
+    "desc": "A big button that drops you onto a randomly selected blog.",
+    "category": "toys",
+    "tags": [
+      "blogs",
+      "random",
+      "button"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "32bit-cafe",
+    "url": "https://32bit.cafe/",
+    "title": "32-Bit Cafe",
+    "desc": "A community focused on building personal websites for self-expression and creativity.",
+    "category": "hosting",
+    "tags": [
+      "community",
+      "personal-sites",
+      "creative"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "yesterweb-community",
+    "url": "https://yesterweb.org/community/",
+    "title": "Yesterweb (Community)",
+    "desc": "An archived web-revival hub (webring/zine/Gemini and more).",
+    "category": "directories",
+    "tags": [
+      "web-revival",
+      "archive",
+      "community"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "heeeeeeeey",
+    "url": "https://heeeeeeeey.com/",
+    "title": "heeeeeeeey.com",
+    "desc": "Minimalist loop-toy that bounces you to its \"hooooooo\" counterpart.",
+    "category": "toys",
+    "tags": [
+      "loop",
+      "minimal",
+      "redirect"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "hooooooooo",
+    "url": "https://hooooooooo.com/",
+    "title": "hooooooooo.com",
+    "desc": "The other half of the endless redirect loop (that's the whole joke).",
+    "category": "toys",
+    "tags": [
+      "loop",
+      "minimal",
+      "redirect"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "zombo",
+    "url": "https://zombo.com/",
+    "title": "Zombo.com",
+    "desc": "Classic single-serving parody of \"Flash intro\" sites: anything is possible.",
+    "category": "weird",
+    "tags": [
+      "parody",
+      "single-serving",
+      "classic-web"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "beesbeesbeesbees",
+    "url": "https://www.beesbeesbeesbees.com/",
+    "title": "BEES BEES BEES BEES",
+    "desc": "A proudly useless looping gag website (exactly what it sounds like).",
+    "category": "toys",
+    "tags": [
+      "loop",
+      "gag",
+      "useless"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "patatap",
+    "url": "https://patatap.com/",
+    "title": "Patatap",
+    "desc": "Press keys/tap to trigger sound + animation like an audiovisual instrument (flashing warning).",
+    "category": "toys",
+    "tags": [
+      "audio",
+      "visual",
+      "interactive"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "museum-of-endangered-sounds",
+    "url": "https://savethesounds.info/",
+    "title": "Museum of Endangered Sounds",
+    "desc": "Click through the iconic sounds of old tech (modems, VHS, etc.).",
+    "category": "archives",
+    "tags": [
+      "audio",
+      "nostalgia",
+      "technology"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "museum-of-lost-sounds",
+    "url": "https://bigsoundbank.com/museumofsounds/",
+    "title": "Museum of Lost Sounds",
+    "desc": "A different \"endangered sounds\" museum experience built around audio nostalgia.",
+    "category": "archives",
+    "tags": [
+      "audio",
+      "nostalgia",
+      "museum"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "rafael-rozendaal-sitelist",
+    "url": "https://www.newrafael.com/sitelist/",
+    "title": "Rafaël Rozendaal — sitelist",
+    "desc": "A giant index of web-based artworks (a portal to dozens of strange sites).",
+    "category": "net-art",
+    "tags": [
+      "index",
+      "portal",
+      "web-art"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "fallingfalling",
+    "url": "https://fallingfalling.com/",
+    "title": "fallingfalling.com",
+    "desc": "Hypnotic net-art piece by Rafaël Rozendaal (2011).",
+    "category": "net-art",
+    "tags": [
+      "hypnotic",
+      "web-art",
+      "2011"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  },
+  {
+    "id": "sitegallery-rozendaal-websites",
+    "url": "https://www.sitegallery.org/exhibition/rafael-rozendaal-websites/",
+    "title": "Site Gallery: \"Rafaël Rozendaal — Websites\"",
+    "desc": "Curated entry point into a set of his online works.",
+    "category": "directories",
+    "tags": [
+      "curation",
+      "exhibition",
+      "net-art"
+    ],
+    "addedAt": "2026-01-11",
+    "isDirectory": true
+  }
+]

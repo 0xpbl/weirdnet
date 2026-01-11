@@ -1,0 +1,24 @@
+---
+layout: layout.njk
+pagination:
+  data: tagsIndex
+  size: 1
+  alias: tag
+permalink: "t/{{ tag.id }}/index.html"
+eleventyComputed:
+  title: "Tag: {{ tag.id }}"
+---
+
+<h1>Tag: {{ tag.id }}</h1>
+<p class="small"><a href="/tags/">&laquo; back to tags</a></p>
+<hr>
+
+<ul>
+{% for item in tag.items %}
+  <li>
+    <a href="{{ item.url }}" rel="noreferrer">{{ item.title }}</a>
+    <span class="small">[{{ item.category }} — {{ item.addedAt }}]</span><br>
+    <span class="small">{{ item.desc }}</span>
+  </li>
+{% endfor %}
+</ul>

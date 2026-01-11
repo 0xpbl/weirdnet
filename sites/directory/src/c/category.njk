@@ -1,0 +1,24 @@
+---
+layout: layout.njk
+pagination:
+  data: categories
+  size: 1
+  alias: cat
+permalink: "c/{{ cat.id }}/index.html"
+eleventyComputed:
+  title: "Category: {{ cat.id }}"
+---
+
+<h1>Category: {{ cat.id }}</h1>
+<p class="small"><a href="/categories/">&laquo; back to categories</a></p>
+<hr>
+
+<ul>
+{% for item in cat.items %}
+  <li>
+    <a href="{{ item.url }}" rel="noreferrer">{{ item.title }}</a>
+    <span class="small">[{{ item.addedAt }}]</span><br>
+    <span class="small">{{ item.desc }}</span>
+  </li>
+{% endfor %}
+</ul>

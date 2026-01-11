@@ -1,0 +1,17 @@
+---
+layout: layout.njk
+title: "Tags"
+---
+
+<h1>Tags</h1>
+<p class="small"><i>...browse by tag.</i></p>
+<hr>
+
+<ul>
+{% for t in tagsIndex %}
+  <li>
+    <a href="/t/{{ t.id }}/">{{ t.label }}</a>
+    <span class="small">({{ t.count }})</span>
+  </li>
+{% endfor %}
+</ul>

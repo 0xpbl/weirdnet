@@ -1,0 +1,32 @@
+---
+layout: layout.njk
+includeFilterJs: true
+pagination:
+  data: tagsIndex
+  size: 1
+  alias: tag
+permalink: "t/{{ tag.id }}/index.html"
+eleventyComputed:
+  title: "Tag: {{ tag.label }}"
+---
+
+<h1>Tag: {{ tag.label }}</h1>
+<p class="small">
+  <a href="/tags/">&laquo; back to tags</a>
+</p>
+
+<p class="small">
+  <input id="q" type="text" size="28" placeholder="filter this page...">
+</p>
+
+<hr>
+
+<ul id="list">
+{% for item in tag.items %}
+  <li data-text="{{ (item.title ~ ' ' ~ item.desc ~ ' ' ~ item.url ~ ' ' ~ item.category ~ ' ' ~ (item.tags | join(' '))) | lower }}">
+    <span class="small">{{ item.addedAt }}</span><br>
+    <a href="{{ item.url }}" rel="noreferrer">{{ item.title }}</a><br>
+    <span class="small">{{ item.desc }}</span>
+  </li>
+{% endfor %}
+</ul>

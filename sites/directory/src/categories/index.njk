@@ -1,0 +1,17 @@
+---
+layout: layout.njk
+title: "Categories"
+---
+
+<h1>Categories</h1>
+<p class="small"><i>...browse by category.</i></p>
+<hr>
+
+<ul>
+{% for c in categories %}
+  <li>
+    <a href="/c/{{ c.id }}/">{{ c.id }}</a>
+    <span class="small">({{ c.count }})</span>
+  </li>
+{% endfor %}
+</ul>
