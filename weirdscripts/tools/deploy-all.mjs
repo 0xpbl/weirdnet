@@ -14,8 +14,8 @@ const DIST_HOME = path.join(SRC, "dist", "home");
 
 const DEPLOY_DIR = "/home/weirdnet-directory/htdocs/directory.weirdnet.org";
 const DEPLOY_LINKS = "/home/linksweird/htdocs/links.weirdnet.org";
-const DEPLOY_LETTERS = "/home/weirdnet/htdocs/weirdnet.org/letters";
-const DEPLOY_HOME = "/home/weirdnet/htdocs/weirdnet.org";
+const DEPLOY_HOME = "/home/weirdnetorg/htdocs/weirdnet.org";
+const DEPLOY_LETTERS = "/home/weirdnetorg/htdocs/weirdnet.org/letters";
 
 const URL_DIR = "https://directory.weirdnet.org";
 const URL_LINKS = "https://links.weirdnet.org";
