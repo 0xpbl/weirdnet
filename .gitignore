@@ -18,6 +18,18 @@ _site/
 .tmp/
 tmp/
 
+# ===== Letters content (copied from txt/) =====
+sites/letters/content/
+
+# ===== Backup files =====
+*.bak
+*.bak.*
+**/*.bak
+**/*.bak.*
+
+# ===== Processed files =====
+weirdscripts/processed/
+
 # ===== OS / editor / IDE =====
 *.swp
 *.swo

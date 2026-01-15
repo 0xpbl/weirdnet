@@ -1,0 +1,40 @@
+/* letters.weirdnet.org — correspondence archive */
+
+.letters-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.letters-list li {
+  padding: 8px 0;
+  border-bottom: 1px dotted #000;
+}
+
+.letters-list li:last-child {
+  border-bottom: 0;
+}
+
+.letter-meta {
+  margin: 12px 0;
+}
+
+.letter-meta p {
+  margin: 4px 0;
+}
+
+.letter-body {
+  margin: 16px 0;
+}
+
+.letter-body pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
