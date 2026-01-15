@@ -9,7 +9,10 @@ module.exports = () => {
     if (!Array.isArray(data)) return [];
 
     // site "links" -> TODOS os links (mesmo que directory)
-    return data.filter((x) => x && typeof x === "object" && x.id && x.url && x.title);
+    // Filtrar e ordenar por data (mais recente primeiro)
+    return data
+      .filter((x) => x && typeof x === "object" && x.id && x.url && x.title)
+      .sort((a, b) => String(b.addedAt || "").localeCompare(String(a.addedAt || "")));
   } catch (e) {
     return [];
   }
