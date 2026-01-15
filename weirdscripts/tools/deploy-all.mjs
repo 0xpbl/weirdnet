@@ -454,10 +454,10 @@ function main() {
   run("node", ["sites/home/build.mjs"], { cwd: SRC });
 
   // 3. Deploy via rsync
-  // IMPORTANTE: Deploy home ANTES de letters para não remover o diretório letters com --delete
+  // IMPORTANTE: Excluir letters do --delete para não remover o diretório letters
   console.log("[RUN] deploy home (rsync)...");
   ensureDeployDir(DEPLOY_HOME);
-  run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_HOME}/`, `${DEPLOY_HOME}/`]);
+  run("rsync", ["-a", "--delete", "--exclude", ".well-known", "--exclude", "letters", `${DIST_HOME}/`, `${DEPLOY_HOME}/`]);
 
   console.log("[RUN] deploy directory (rsync)...");
   ensureDeployDir(DEPLOY_DIR);
