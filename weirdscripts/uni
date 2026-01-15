@@ -17,6 +17,15 @@ if [[ ! -d "$SRC_DIR" ]]; then
   exit 1
 fi
 
-# roda deploy-all
+# Criar dir.txt e links.txt se não existirem
+if [[ ! -f "$WEIRDNET_HOME/dir.txt" ]]; then
+  touch "$WEIRDNET_HOME/dir.txt"
+fi
+
+if [[ ! -f "$WEIRDNET_HOME/links.txt" ]]; then
+  touch "$WEIRDNET_HOME/links.txt"
+fi
+
+# roda uni.mjs
 cd "$SRC_DIR"
-exec node "$SCRIPT_DIR/tools/deploy-all.mjs" "$@"
+exec node "$SCRIPT_DIR/tools/uni.mjs" "$@"

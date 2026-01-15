@@ -9,15 +9,12 @@ const JSON_FILE = path.join(SRC, "data", "links.json");
 
 const DIST_DIR = path.join(SRC, "dist", "directory");
 const DIST_LINKS = path.join(SRC, "dist", "links");
-const DIST_HOME = path.join(SRC, "dist", "home");
 
 const DEPLOY_DIR = "/home/weirdnet-directory/htdocs/directory.weirdnet.org";
 const DEPLOY_LINKS = "/home/linksweird/htdocs/links.weirdnet.org";
-const DEPLOY_HOME = "/home/weirdnetorg/htdocs/weirdnet.org";
 
 const URL_DIR = "https://directory.weirdnet.org";
 const URL_LINKS = "https://links.weirdnet.org";
-const URL_HOME = "https://weirdnet.org";
 
 function die(msg) {
   console.error(`\n[FAIL] ${msg}\n`);
@@ -113,60 +110,6 @@ function writeJSON(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2) + "\n", "utf8");
 }
 
-function deduplicateLinks(data) {
-  // SEGURANÇA: Esta função NUNCA apaga links únicos, apenas remove duplicados (mesma URL)
-  // Agrupa links por URL normalizada (trim, lowercase)
-  const byUrl = new Map();
-  
-  for (const link of data) {
-    if (!link || !link.url) continue;
-    const urlKey = String(link.url).trim().toLowerCase();
-    
-    if (!byUrl.has(urlKey)) {
-      byUrl.set(urlKey, []);
-    }
-    byUrl.get(urlKey).push(link);
-  }
-  
-  // Para cada URL, mantém apenas o registro mais antigo
-  // IMPORTANTE: Links com URLs diferentes (mesmo que similares) são preservados
-  const deduplicated = [];
-  let removedCount = 0;
-  const uniqueUrls = new Set();
-  
-  for (const [urlKey, links] of byUrl.entries()) {
-    if (links.length === 1) {
-      // Link único - SEMPRE preservado
-      deduplicated.push(links[0]);
-      uniqueUrls.add(urlKey);
-    } else {
-      // Duplicados encontrados - mantém apenas o mais antigo
-      // Ordena por addedAt (mais antigo primeiro)
-      links.sort((a, b) => {
-        const dateA = String(a.addedAt || "").trim();
-        const dateB = String(b.addedAt || "").trim();
-        return dateA.localeCompare(dateB);
-      });
-      
-      // Mantém o mais antigo (preserva todos os metadados)
-      deduplicated.push(links[0]);
-      uniqueUrls.add(urlKey);
-      removedCount += links.length - 1;
-    }
-  }
-  
-  // Validação de segurança: garantir que não perdemos URLs únicas
-  if (deduplicated.length < uniqueUrls.size) {
-    throw new Error(`[SECURITY] deduplicateLinks: Perda de links únicos detectada!`);
-  }
-  
-  if (removedCount > 0) {
-    console.log(`[deduplicate] Removed ${removedCount} duplicate link(s) (same URL), preserved ${deduplicated.length} unique links`);
-  }
-  
-  return deduplicated;
-}
-
 function ensureFileIfMissing(filepath, content) {
   if (!fs.existsSync(filepath)) {
     fs.mkdirSync(path.dirname(filepath), { recursive: true });
@@ -257,8 +200,9 @@ eleventyExcludeFromCollections: true
 `
   );
 
-  // NOTE: RSS/Atom robustos dependem do eleventy.config.cjs do links ter filtros.
-  ensureFileIfMissing(path.join(SRC, "sites", "links", "src", "rss.njk"),
+  // RSS/Atom para links
+  ensureFileIfMissing(
+    path.join(SRC, "sites", "links", "src", "rss.njk"),
 `---
 permalink: "rss.xml"
 eleventyExcludeFromCollections: true
@@ -285,7 +229,8 @@ eleventyExcludeFromCollections: true
 `
   );
 
-  ensureFileIfMissing(path.join(SRC, "sites", "links", "src", "atom.njk"),
+  ensureFileIfMissing(
+    path.join(SRC, "sites", "links", "src", "atom.njk"),
 `---
 permalink: "atom.xml"
 eleventyExcludeFromCollections: true
@@ -373,7 +318,7 @@ function parseQueueFile(text) {
 }
 
 function mergeEntry(existing, incoming, mode) {
-  // mode: "dir" promotes isDirectory true; "links" sets isDirectory false
+  // mode: "dir" promotes isDirectory true; "links" does NOT demote existing true
   const updated = { ...existing };
 
   // always update metadata if provided
@@ -392,10 +337,15 @@ function mergeEntry(existing, incoming, mode) {
   if (!updated.addedAt) updated.addedAt = incoming.addedAt;
 
   // Garantir isDirectory correto baseado no mode
+  // Se mode é "dir", SEMPRE setar isDirectory = true
+  // Se mode é "links", setar isDirectory = false apenas se não for true
   if (mode === "dir") {
     updated.isDirectory = true;
   } else if (mode === "links") {
-    updated.isDirectory = false;
+    // Não demover se já for true, mas setar false se não for
+    if (updated.isDirectory !== true) {
+      updated.isDirectory = false;
+    }
   }
 
   return updated;
@@ -406,8 +356,12 @@ function updateJsonFromQueue(mode, queueItems) {
   // Todos os links que não estão na fila são 100% preservados
   const today = ymdSaoPauloNow();
   const data = readJSON(JSON_FILE);
+  
+  // Validação de segurança: capturar estado inicial
   const beforeCount = data.length;
-  const beforeUrls = new Set(data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
+  const beforeUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
 
   const existingByUrl = new Map();
   const existingIds = new Set();
@@ -462,7 +416,9 @@ function updateJsonFromQueue(mode, queueItems) {
   }
 
   // Validação adicional: garantir que todas as URLs originais estão presentes
-  const afterUrls = new Set(data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
+  const afterUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
   for (const url of beforeUrls) {
     if (!afterUrls.has(url)) {
       throw new Error(`[SECURITY] updateJsonFromQueue: URL única foi removida: ${url}`);
@@ -499,7 +455,146 @@ function normalizeDate(dateStr) {
   return ymdSaoPauloNow();
 }
 
+function deduplicateLinks(data) {
+  // SEGURANÇA: Esta função NUNCA apaga links únicos, apenas remove duplicados (mesma URL)
+  // Agrupa links por URL normalizada (trim, lowercase)
+  const byUrl = new Map();
+  
+  for (const link of data) {
+    if (!link || !link.url) continue;
+    const urlKey = String(link.url).trim().toLowerCase();
+    
+    if (!byUrl.has(urlKey)) {
+      byUrl.set(urlKey, []);
+    }
+    byUrl.get(urlKey).push(link);
+  }
+  
+  // Para cada URL, mantém apenas o registro mais antigo
+  // IMPORTANTE: Links com URLs diferentes (mesmo que similares) são preservados
+  const deduplicated = [];
+  let removedCount = 0;
+  let datesNormalized = 0;
+  let metadataMerged = 0;
+  const uniqueUrls = new Set();
+  
+  for (const [urlKey, links] of byUrl.entries()) {
+    if (links.length === 1) {
+      // Link único - SEMPRE preservado, mas normaliza data
+      const link = { ...links[0] };
+      const originalDate = link.addedAt;
+      const normalizedDate = normalizeDate(originalDate);
+      if (originalDate !== normalizedDate) {
+        link.addedAt = normalizedDate;
+        datesNormalized++;
+      }
+      deduplicated.push(link);
+      uniqueUrls.add(urlKey);
+    } else {
+      // Duplicados encontrados - mantém apenas o mais antigo
+      // Ordena por addedAt (mais antigo primeiro), normalizando datas primeiro
+      links.sort((a, b) => {
+        const dateA = normalizeDate(a.addedAt || "");
+        const dateB = normalizeDate(b.addedAt || "");
+        return dateA.localeCompare(dateB);
+      });
+      
+      // Mantém o mais antigo, mas preserva metadados importantes de todos
+      const kept = { ...links[0] };
+      const originalDate = kept.addedAt;
+      const normalizedDate = normalizeDate(kept.addedAt);
+      if (originalDate !== normalizedDate) {
+        kept.addedAt = normalizedDate;
+        datesNormalized++;
+      }
+      
+      let hadChanges = false;
+      
+      // Se algum duplicado tem isDirectory: true, preserva
+      const originalIsDir = kept.isDirectory;
+      if (links.some(l => l.isDirectory === true)) {
+        kept.isDirectory = true;
+        if (originalIsDir !== true) hadChanges = true;
+      }
+      
+      // Preserva category se algum tiver (prioriza o mais antigo que tem)
+      const originalCategory = kept.category;
+      if (!kept.category) {
+        for (const l of links) {
+          if (l.category) {
+            kept.category = l.category;
+            hadChanges = true;
+            break;
+          }
+        }
+      }
+      
+      // Merge tags de todos os duplicados
+      const allTags = new Set();
+      for (const l of links) {
+        if (Array.isArray(l.tags)) {
+          for (const tag of l.tags) {
+            allTags.add(String(tag).trim());
+          }
+        }
+      }
+      const originalTagsCount = Array.isArray(kept.tags) ? kept.tags.length : 0;
+      if (allTags.size > 0) {
+        kept.tags = Array.from(allTags).filter(Boolean);
+        if (kept.tags.length !== originalTagsCount) {
+          hadChanges = true;
+          metadataMerged++;
+        }
+      }
+      
+      // Preserva id se algum tiver
+      if (!kept.id) {
+        for (const l of links) {
+          if (l.id) {
+            kept.id = l.id;
+            hadChanges = true;
+            break;
+          }
+        }
+      }
+      
+      if (hadChanges) metadataMerged++;
+      
+      deduplicated.push(kept);
+      uniqueUrls.add(urlKey);
+      removedCount += links.length - 1;
+    }
+  }
+  
+  // Validação de segurança: garantir que não perdemos URLs únicas
+  if (deduplicated.length < uniqueUrls.size) {
+    throw new Error(`[SECURITY] deduplicateLinks: Perda de links únicos detectada!`);
+  }
+  
+  // Validação adicional: garantir que todas as URLs únicas estão presentes
+  const beforeUniqueUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
+  const afterUniqueUrls = new Set(
+    deduplicated.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
+  
+  if (beforeUniqueUrls.size !== afterUniqueUrls.size) {
+    throw new Error(`[SECURITY] deduplicateLinks: Perda de URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
+  }
+  
+  // Retornar resultado com informações sobre mudanças
+  return {
+    data: deduplicated,
+    removedCount,
+    datesNormalized,
+    metadataMerged,
+    hadChanges: removedCount > 0 || datesNormalized > 0 || metadataMerged > 0
+  };
+}
+
 function ensureAllLinksHaveId() {
+  // SEGURANÇA: Esta função NUNCA remove links, apenas adiciona IDs e normaliza datas
   // Garantir que todos os links tenham id (necessário para aparecer no directory)
   if (!fs.existsSync(JSON_FILE)) {
     console.log("[fix-ids] links.json não encontrado, pulando correção\n");
@@ -507,6 +602,13 @@ function ensureAllLinksHaveId() {
   }
   
   const data = readJSON(JSON_FILE);
+  
+  // Validação de segurança: capturar estado inicial
+  const beforeCount = data.length;
+  const beforeUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
+  
   const existingIds = new Set();
   let fixedIdCount = 0;
   let fixedDateCount = 0;
@@ -520,6 +622,7 @@ function ensureAllLinksHaveId() {
   }
   
   // Corrigir links que não têm id ou têm addedAt em formato errado
+  // IMPORTANTE: Iteramos sobre o array original, apenas modificando propriedades, nunca removendo
   for (const link of data) {
     if (!link) continue;
     
@@ -544,6 +647,21 @@ function ensureAllLinksHaveId() {
         linksWithoutUrlOrTitle++;
       }
       linksWithoutId++;
+    }
+  }
+  
+  // Validação de segurança CRÍTICA: garantir que não perdemos links
+  if (data.length < beforeCount) {
+    throw new Error(`[SECURITY] ensureAllLinksHaveId: Links foram removidos! Antes: ${beforeCount}, Depois: ${data.length}`);
+  }
+  
+  // Validação adicional: garantir que todas as URLs originais estão presentes
+  const afterUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
+  for (const url of beforeUrls) {
+    if (!afterUrls.has(url)) {
+      throw new Error(`[SECURITY] ensureAllLinksHaveId: URL única foi removida: ${url}`);
     }
   }
   
@@ -604,43 +722,62 @@ function main() {
   const reloadNginx = argv.includes("--reload-nginx");
   const noCheck = argv.includes("--no-check");
 
-  // 1. Processar filas (dir.txt e links.txt)
+  // Ler filas
   const dirTxtPath = path.join(HOME, "dir.txt");
   const linksTxtPath = path.join(HOME, "links.txt");
-
+  
   if (!fs.existsSync(dirTxtPath)) fs.writeFileSync(dirTxtPath, "", "utf8");
   if (!fs.existsSync(linksTxtPath)) fs.writeFileSync(linksTxtPath, "", "utf8");
-
+  
   const dirTxt = fs.readFileSync(dirTxtPath, "utf8");
   const linksTxt = fs.readFileSync(linksTxtPath, "utf8");
 
-  // 0. Garantir que todos os links tenham id (necessário para aparecer no directory)
+  // 0. Deduplicar links existentes antes de processar filas
+  // IMPORTANTE: Remove apenas duplicados (mesma URL), nunca links únicos
+  if (fs.existsSync(JSON_FILE)) {
+    const data = readJSON(JSON_FILE);
+    const beforeCount = data.length;
+    const beforeUniqueUrls = new Set(
+      data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+    );
+    
+    const result = deduplicateLinks(data);
+    const deduplicated = result.data;
+    const afterUniqueUrls = new Set(
+      deduplicated.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+    );
+    
+    // Validação: garantir que não perdemos URLs únicas
+    if (beforeUniqueUrls.size !== afterUniqueUrls.size) {
+      throw new Error(`[SECURITY] Deduplicação perdeu URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
+    }
+    
+    // Sempre salvar se houver mudanças (duplicados removidos, datas normalizadas, metadados mesclados)
+    if (result.hadChanges) {
+      writeJSON(JSON_FILE, deduplicated);
+      const logs = [];
+      if (result.removedCount > 0) {
+        logs.push(`removed ${result.removedCount} duplicate(s)`);
+      }
+      if (result.datesNormalized > 0) {
+        logs.push(`normalized ${result.datesNormalized} date(s)`);
+      }
+      if (result.metadataMerged > 0) {
+        logs.push(`merged metadata for ${result.metadataMerged} link(s)`);
+      }
+      console.log(`[deduplicate] Cleaned ${beforeCount} -> ${deduplicated.length} links (${logs.join(", ")}, preserved ${afterUniqueUrls.size} unique URLs)\n`);
+    } else {
+      console.log(`[deduplicate] No duplicates found, ${beforeCount} links already clean (${beforeUniqueUrls.size} unique URLs)\n`);
+    }
+  }
+
+  // 1. Garantir que todos os links tenham id e datas normalizadas (necessário para aparecer no directory)
   ensureAllLinksHaveId();
 
-  // 0. Deduplicar links existentes antes de processar filas
-  // DESABILITADO TEMPORARIAMENTE - Apenas remove duplicados (mesma URL), nunca links únicos
-  // if (fs.existsSync(JSON_FILE)) {
-  //   const data = readJSON(JSON_FILE);
-  //   const beforeCount = data.length;
-  //   const deduplicated = deduplicateLinks(data);
-  //   
-  //   // Validação: garantir que não perdemos URLs únicas
-  //   const beforeUniqueUrls = new Set(data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
-  //   const afterUniqueUrls = new Set(deduplicated.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
-  //   
-  //   if (beforeUniqueUrls.size !== afterUniqueUrls.size) {
-  //     throw new Error(`[SECURITY] Deduplicação perdeu URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
-  //   }
-  //   
-  //   if (deduplicated.length !== beforeCount) {
-  //     writeJSON(JSON_FILE, deduplicated);
-  //     console.log(`[deduplicate] Cleaned ${beforeCount} -> ${deduplicated.length} links (removed duplicates only, preserved ${afterUniqueUrls.size} unique URLs)\n`);
-  //   }
-  // }
-
+  // 2. Garantir robots/sitemaps/feeds
   ensureRobotsAndSitemapsAndFeeds();
 
-  // Verificar estado inicial do JSON
+  // 3. Processar filas
   const initialData = fs.existsSync(JSON_FILE) ? readJSON(JSON_FILE) : [];
   const initialCount = initialData.length;
   console.log(`[INFO] Starting with ${initialCount} links in JSON\n`);
@@ -673,21 +810,14 @@ function main() {
   }
   console.log(`[INFO] All ${finalCount} links preserved after processing queues\n`);
 
-  // 2. Build de todos os sites
+  // 4. Build de ambos os sites
   console.log("[RUN] build directory...");
   run("npx", ["@11ty/eleventy", "--config=sites/directory/eleventy.config.cjs"], { cwd: SRC });
 
   console.log("[RUN] build links...");
   run("npx", ["@11ty/eleventy", "--config=sites/links/eleventy.config.cjs"], { cwd: SRC });
 
-  console.log("[RUN] build home...");
-  run("node", ["sites/home/build.mjs"], { cwd: SRC });
-
-  // 3. Deploy via rsync
-  console.log("[RUN] deploy home (rsync)...");
-  ensureDeployDir(DEPLOY_HOME);
-  run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_HOME}/`, `${DEPLOY_HOME}/`]);
-
+  // 5. Deploy via rsync
   console.log("[RUN] deploy directory (rsync)...");
   ensureDeployDir(DEPLOY_DIR);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_DIR}/`, `${DEPLOY_DIR}/`]);
@@ -696,14 +826,14 @@ function main() {
   ensureDeployDir(DEPLOY_LINKS);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LINKS}/`, `${DEPLOY_LINKS}/`]);
 
-  // 4. Reload nginx (se flag)
+  // 6. Reload nginx (se flag)
   if (reloadNginx) {
     console.log("[RUN] nginx -t && reload...");
     run("nginx", ["-t"]);
     run("systemctl", ["reload", "nginx"]);
   }
 
-  // 5. Health checks (se não --no-check)
+  // 7. Health checks (se não --no-check)
   if (!noCheck) {
     console.log("[RUN] health checks (expect 200)...");
     check200(`${URL_DIR}/sitemap.xml`);
@@ -713,12 +843,9 @@ function main() {
     check200(`${URL_LINKS}/robots.txt`);
     check200(`${URL_LINKS}/rss.xml`);
     check200(`${URL_LINKS}/atom.xml`);
-
-    check200(`${URL_HOME}/`);
-    check200(`${URL_HOME}/robots.txt`);
   }
 
-  // 6. Limpar filas processadas
+  // 8. Limpar filas processadas
   if (hasDirWork) {
     archiveAndClear("dir", dirTxtPath, dirTxt);
     console.log(`[OK] consumed + archived dir.txt\n`);
