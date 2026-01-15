@@ -27,6 +27,14 @@ function die(msg) {
   process.exit(1);
 }
 
+function ensureDeployDir(dirPath) {
+  // Cria diretório de deploy se não existir
+  const parentDir = path.dirname(dirPath);
+  if (!fs.existsSync(parentDir)) {
+    fs.mkdirSync(parentDir, { recursive: true });
+  }
+}
+
 function run(cmd, args, opts = {}) {
   const res = spawnSync(cmd, args, { stdio: "inherit", ...opts });
   if (res.status !== 0) {
@@ -448,15 +456,19 @@ function main() {
 
   // 3. Deploy via rsync
   console.log("[RUN] deploy directory (rsync)...");
+  ensureDeployDir(DEPLOY_DIR);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_DIR}/`, `${DEPLOY_DIR}/`]);
 
   console.log("[RUN] deploy links (rsync)...");
+  ensureDeployDir(DEPLOY_LINKS);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LINKS}/`, `${DEPLOY_LINKS}/`]);
 
   console.log("[RUN] deploy letters (rsync)...");
+  ensureDeployDir(DEPLOY_LETTERS);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LETTERS}/`, `${DEPLOY_LETTERS}/`]);
 
   console.log("[RUN] deploy home (rsync)...");
+  ensureDeployDir(DEPLOY_HOME);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_HOME}/`, `${DEPLOY_HOME}/`]);
 
   // 4. Reload nginx (se flag)
