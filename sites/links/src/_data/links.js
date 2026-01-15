@@ -8,8 +8,8 @@ module.exports = () => {
     const data = JSON.parse(raw);
     if (!Array.isArray(data)) return [];
 
-    // site "links" -> só o que NÃO é directory
-    return data.filter((x) => x && x.isDirectory !== true);
+    // site "links" -> TODOS os links (mesmo que directory)
+    return data.filter((x) => x && typeof x === "object" && x.id && x.url && x.title);
   } catch (e) {
     return [];
   }

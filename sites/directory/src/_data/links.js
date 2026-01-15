@@ -24,7 +24,7 @@ module.exports = function () {
       addedAt: String(x.addedAt || "").trim(),
       isDirectory: x.isDirectory !== false,
     }))
-    .filter((x) => x.id && x.url && x.title && x.isDirectory)
+    .filter((x) => x.id && x.url && x.title)
     .sort((a, b) => (b.addedAt || "").localeCompare(a.addedAt || ""));
 
     return normalized;
