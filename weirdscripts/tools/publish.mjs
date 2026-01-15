@@ -448,6 +448,115 @@ function normalizeDate(dateStr) {
   return ymdSaoPauloNow();
 }
 
+function deduplicateLinks(data) {
+  // SEGURANÇA: Esta função NUNCA apaga links únicos, apenas remove duplicados (mesma URL)
+  // Agrupa links por URL normalizada (trim, lowercase)
+  const byUrl = new Map();
+  
+  for (const link of data) {
+    if (!link || !link.url) continue;
+    const urlKey = String(link.url).trim().toLowerCase();
+    
+    if (!byUrl.has(urlKey)) {
+      byUrl.set(urlKey, []);
+    }
+    byUrl.get(urlKey).push(link);
+  }
+  
+  // Para cada URL, mantém apenas o registro mais antigo
+  // IMPORTANTE: Links com URLs diferentes (mesmo que similares) são preservados
+  const deduplicated = [];
+  let removedCount = 0;
+  const uniqueUrls = new Set();
+  
+  for (const [urlKey, links] of byUrl.entries()) {
+    if (links.length === 1) {
+      // Link único - SEMPRE preservado
+      deduplicated.push(links[0]);
+      uniqueUrls.add(urlKey);
+    } else {
+      // Duplicados encontrados - mantém apenas o mais antigo
+      // Ordena por addedAt (mais antigo primeiro), normalizando datas primeiro
+      links.sort((a, b) => {
+        const dateA = normalizeDate(a.addedAt || "");
+        const dateB = normalizeDate(b.addedAt || "");
+        return dateA.localeCompare(dateB);
+      });
+      
+      // Mantém o mais antigo, mas preserva metadados importantes de todos
+      const kept = { ...links[0] };
+      
+      // Normalizar data do link mantido
+      kept.addedAt = normalizeDate(kept.addedAt);
+      
+      // Se algum duplicado tem isDirectory: true, preserva
+      if (links.some(l => l.isDirectory === true)) {
+        kept.isDirectory = true;
+      }
+      
+      // Preserva category se algum tiver (prioriza o mais antigo que tem)
+      if (!kept.category) {
+        for (const l of links) {
+          if (l.category) {
+            kept.category = l.category;
+            break;
+          }
+        }
+      }
+      
+      // Merge tags de todos os duplicados
+      const allTags = new Set();
+      for (const l of links) {
+        if (Array.isArray(l.tags)) {
+          for (const tag of l.tags) {
+            allTags.add(String(tag).trim());
+          }
+        }
+      }
+      if (allTags.size > 0) {
+        kept.tags = Array.from(allTags).filter(Boolean);
+      }
+      
+      // Preserva id se algum tiver
+      if (!kept.id) {
+        for (const l of links) {
+          if (l.id) {
+            kept.id = l.id;
+            break;
+          }
+        }
+      }
+      
+      deduplicated.push(kept);
+      uniqueUrls.add(urlKey);
+      removedCount += links.length - 1;
+    }
+  }
+  
+  // Validação de segurança: garantir que não perdemos URLs únicas
+  if (deduplicated.length < uniqueUrls.size) {
+    throw new Error(`[SECURITY] deduplicateLinks: Perda de links únicos detectada!`);
+  }
+  
+  // Validação adicional: garantir que todas as URLs únicas estão presentes
+  const beforeUniqueUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
+  const afterUniqueUrls = new Set(
+    deduplicated.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
+  
+  if (beforeUniqueUrls.size !== afterUniqueUrls.size) {
+    throw new Error(`[SECURITY] deduplicateLinks: Perda de URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
+  }
+  
+  if (removedCount > 0) {
+    console.log(`[deduplicate] Removed ${removedCount} duplicate link(s) (same URL), preserved ${deduplicated.length} unique links`);
+  }
+  
+  return deduplicated;
+}
+
 function ensureAllLinksHaveId() {
   // SEGURANÇA: Esta função NUNCA remove links, apenas adiciona IDs e normaliza datas
   // Garantir que todos os links tenham id (necessário para aparecer no directory)
@@ -634,7 +743,32 @@ function main() {
   if (!fs.existsSync(txtPath)) fs.writeFileSync(txtPath, "", "utf8");
   const txt = fs.readFileSync(txtPath, "utf8");
 
-  // 0. Garantir que todos os links tenham id (necessário para aparecer no directory)
+  // 0. Deduplicar links existentes antes de processar filas
+  // IMPORTANTE: Remove apenas duplicados (mesma URL), nunca links únicos
+  if (fs.existsSync(JSON_FILE)) {
+    const data = readJSON(JSON_FILE);
+    const beforeCount = data.length;
+    const beforeUniqueUrls = new Set(
+      data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+    );
+    
+    const deduplicated = deduplicateLinks(data);
+    const afterUniqueUrls = new Set(
+      deduplicated.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+    );
+    
+    // Validação: garantir que não perdemos URLs únicas
+    if (beforeUniqueUrls.size !== afterUniqueUrls.size) {
+      throw new Error(`[SECURITY] Deduplicação perdeu URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
+    }
+    
+    if (deduplicated.length !== beforeCount) {
+      writeJSON(JSON_FILE, deduplicated);
+      console.log(`[deduplicate] Cleaned ${beforeCount} -> ${deduplicated.length} links (removed duplicates only, preserved ${afterUniqueUrls.size} unique URLs)\n`);
+    }
+  }
+
+  // 1. Garantir que todos os links tenham id e datas normalizadas (necessário para aparecer no directory)
   ensureAllLinksHaveId();
 
   ensureRobotsAndSitemapsAndFeeds();
@@ -677,8 +811,28 @@ function main() {
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LINKS}/`, `${DEPLOY_LINKS}/`]);
 
   console.log("[RUN] deploy letters (rsync)...");
+  // Verificar se dist/letters existe e tem conteúdo antes de fazer deploy
+  if (!fs.existsSync(DIST_LETTERS)) {
+    throw new Error(`[FAIL] dist/letters não existe: ${DIST_LETTERS}`);
+  }
+  const distFiles = fs.readdirSync(DIST_LETTERS);
+  if (distFiles.length === 0) {
+    throw new Error(`[FAIL] dist/letters está vazio`);
+  }
+  if (!distFiles.includes("index.html")) {
+    throw new Error(`[FAIL] dist/letters/index.html não encontrado`);
+  }
   ensureDeployDir(DEPLOY_LETTERS);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LETTERS}/`, `${DEPLOY_LETTERS}/`]);
+  // Verificar se o deploy foi bem-sucedido
+  if (!fs.existsSync(DEPLOY_LETTERS)) {
+    throw new Error(`[FAIL] DEPLOY_LETTERS não existe após rsync: ${DEPLOY_LETTERS}`);
+  }
+  const deployedFiles = fs.readdirSync(DEPLOY_LETTERS);
+  if (!deployedFiles.includes("index.html")) {
+    throw new Error(`[FAIL] index.html não encontrado em ${DEPLOY_LETTERS} após deploy`);
+  }
+  console.log(`[OK] letters deployed: ${deployedFiles.length} files in ${DEPLOY_LETTERS}`);
 
   if (reloadNginx) {
     console.log("[RUN] nginx -t && reload...");
