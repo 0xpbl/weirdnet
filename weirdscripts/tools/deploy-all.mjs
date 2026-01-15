@@ -28,10 +28,9 @@ function die(msg) {
 }
 
 function ensureDeployDir(dirPath) {
-  // Cria diretório de deploy se não existir
-  const parentDir = path.dirname(dirPath);
-  if (!fs.existsSync(parentDir)) {
-    fs.mkdirSync(parentDir, { recursive: true });
+  // Cria diretório de deploy completo se não existir
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
   }
 }
 
