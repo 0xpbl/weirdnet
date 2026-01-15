@@ -467,12 +467,21 @@ function deduplicateLinks(data) {
   // IMPORTANTE: Links com URLs diferentes (mesmo que similares) são preservados
   const deduplicated = [];
   let removedCount = 0;
+  let datesNormalized = 0;
+  let metadataMerged = 0;
   const uniqueUrls = new Set();
   
   for (const [urlKey, links] of byUrl.entries()) {
     if (links.length === 1) {
-      // Link único - SEMPRE preservado
-      deduplicated.push(links[0]);
+      // Link único - SEMPRE preservado, mas normaliza data
+      const link = { ...links[0] };
+      const originalDate = link.addedAt;
+      const normalizedDate = normalizeDate(originalDate);
+      if (originalDate !== normalizedDate) {
+        link.addedAt = normalizedDate;
+        datesNormalized++;
+      }
+      deduplicated.push(link);
       uniqueUrls.add(urlKey);
     } else {
       // Duplicados encontrados - mantém apenas o mais antigo
@@ -485,20 +494,29 @@ function deduplicateLinks(data) {
       
       // Mantém o mais antigo, mas preserva metadados importantes de todos
       const kept = { ...links[0] };
+      const originalDate = kept.addedAt;
+      const normalizedDate = normalizeDate(kept.addedAt);
+      if (originalDate !== normalizedDate) {
+        kept.addedAt = normalizedDate;
+        datesNormalized++;
+      }
       
-      // Normalizar data do link mantido
-      kept.addedAt = normalizeDate(kept.addedAt);
+      let hadChanges = false;
       
       // Se algum duplicado tem isDirectory: true, preserva
+      const originalIsDir = kept.isDirectory;
       if (links.some(l => l.isDirectory === true)) {
         kept.isDirectory = true;
+        if (originalIsDir !== true) hadChanges = true;
       }
       
       // Preserva category se algum tiver (prioriza o mais antigo que tem)
+      const originalCategory = kept.category;
       if (!kept.category) {
         for (const l of links) {
           if (l.category) {
             kept.category = l.category;
+            hadChanges = true;
             break;
           }
         }
@@ -513,8 +531,13 @@ function deduplicateLinks(data) {
           }
         }
       }
+      const originalTagsCount = Array.isArray(kept.tags) ? kept.tags.length : 0;
       if (allTags.size > 0) {
         kept.tags = Array.from(allTags).filter(Boolean);
+        if (kept.tags.length !== originalTagsCount) {
+          hadChanges = true;
+          metadataMerged++;
+        }
       }
       
       // Preserva id se algum tiver
@@ -522,10 +545,13 @@ function deduplicateLinks(data) {
         for (const l of links) {
           if (l.id) {
             kept.id = l.id;
+            hadChanges = true;
             break;
           }
         }
       }
+      
+      if (hadChanges) metadataMerged++;
       
       deduplicated.push(kept);
       uniqueUrls.add(urlKey);
@@ -550,11 +576,14 @@ function deduplicateLinks(data) {
     throw new Error(`[SECURITY] deduplicateLinks: Perda de URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
   }
   
-  if (removedCount > 0) {
-    console.log(`[deduplicate] Removed ${removedCount} duplicate link(s) (same URL), preserved ${deduplicated.length} unique links`);
-  }
-  
-  return deduplicated;
+  // Retornar resultado com informações sobre mudanças
+  return {
+    data: deduplicated,
+    removedCount,
+    datesNormalized,
+    metadataMerged,
+    hadChanges: removedCount > 0 || datesNormalized > 0 || metadataMerged > 0
+  };
 }
 
 function ensureAllLinksHaveId() {
@@ -752,7 +781,8 @@ function main() {
       data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
     );
     
-    const deduplicated = deduplicateLinks(data);
+    const result = deduplicateLinks(data);
+    const deduplicated = result.data;
     const afterUniqueUrls = new Set(
       deduplicated.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
     );
@@ -762,9 +792,22 @@ function main() {
       throw new Error(`[SECURITY] Deduplicação perdeu URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
     }
     
-    if (deduplicated.length !== beforeCount) {
+    // Sempre salvar se houver mudanças (duplicados removidos, datas normalizadas, metadados mesclados)
+    if (result.hadChanges) {
       writeJSON(JSON_FILE, deduplicated);
-      console.log(`[deduplicate] Cleaned ${beforeCount} -> ${deduplicated.length} links (removed duplicates only, preserved ${afterUniqueUrls.size} unique URLs)\n`);
+      const logs = [];
+      if (result.removedCount > 0) {
+        logs.push(`removed ${result.removedCount} duplicate(s)`);
+      }
+      if (result.datesNormalized > 0) {
+        logs.push(`normalized ${result.datesNormalized} date(s)`);
+      }
+      if (result.metadataMerged > 0) {
+        logs.push(`merged metadata for ${result.metadataMerged} link(s)`);
+      }
+      console.log(`[deduplicate] Cleaned ${beforeCount} -> ${deduplicated.length} links (${logs.join(", ")}, preserved ${afterUniqueUrls.size} unique URLs)\n`);
+    } else {
+      console.log(`[deduplicate] No duplicates found, ${beforeCount} links already clean (${beforeUniqueUrls.size} unique URLs)\n`);
     }
   }
 
