@@ -1,27 +1,16 @@
 const fs = require("fs");
+const path = require("path");
 
-module.exports = function () {
-  const file = "/home/weirdnet/_src/data/links.json";
+module.exports = () => {
+  const jsonPath = path.resolve(__dirname, "../../../../data/links.json");
+  try {
+    const raw = fs.readFileSync(jsonPath, "utf8");
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data)) return [];
 
-  const raw = fs.readFileSync(file, "utf8");
-  const data = JSON.parse(raw);
-
-  if (!Array.isArray(data)) {
-    throw new Error(`Expected an array in ${file}`);
+    // site "links" -> só o que NÃO é directory
+    return data.filter((x) => x && x.isDirectory !== true);
+  } catch (e) {
+    return [];
   }
-
-  return data
-    .filter((x) => x && typeof x === "object")
-    .map((x) => ({
-      id: String(x.id || "").trim(),
-      url: String(x.url || "").trim(),
-      title: String(x.title || "").trim(),
-      desc: String(x.desc || "").trim(),
-      category: String(x.category || "").trim(),
-      tags: Array.isArray(x.tags) ? x.tags.map((t) => String(t).trim()).filter(Boolean) : [],
-      addedAt: String(x.addedAt || "").trim(),
-      isDirectory: x.isDirectory !== false,
-    }))
-    .filter((x) => x.id && x.url && x.title && x.addedAt)
-    .sort((a, b) => (b.addedAt || "").localeCompare(b.addedAt || ""));
 };

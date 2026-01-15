@@ -2,7 +2,6 @@
 permalink: "rss.xml"
 eleventyExcludeFromCollections: true
 ---
-
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
@@ -13,19 +12,28 @@ eleventyExcludeFromCollections: true
 
     <atom:link href="https://links.weirdnet.org/rss.xml" rel="self" type="application/rss+xml"/>
 
-    {% if (links | length) > 0 %}
-    <lastBuildDate>{{ links[0].addedAt | rfc822 }}</lastBuildDate>
+    {# fonte única de verdade #}
+    {% set items = linksJson | default([]) %}
+
+    {# lastBuildDate: pega a data do primeiro item (sem filtros) #}
+    {% if (items | length) > 0 %}
+      <lastBuildDate>{{ (items[0].addedAt | default("1970-01-01")) ~ "T00:00:00Z" }}</lastBuildDate>
     {% endif %}
 
-    {% for item in links | slice(0, 50) %}
+    {# gera até 50 itens NÃO-directory, sem depender de rejectattr/slice #}
+    {% set count = 0 %}
+    {% for item in items %}
+      {% if item and item.isDirectory != true and count < 50 %}
+        {% set count = count + 1 %}
     <item>
-      <title>{{ item.title | xml }}</title>
-      <link>{{ item.url | xml }}</link>
-      <guid isPermaLink="true">{{ item.url | xml }}</guid>
-      <description>{{ item.desc | xml }}</description>
-      <pubDate>{{ item.addedAt | rfc822 }}</pubDate>
+      <title>{{ (item.title | default("")) | escape }}</title>
+      <link>{{ (item.url | default("")) | escape }}</link>
+      <guid isPermaLink="true">{{ (item.url | default("")) | escape }}</guid>
+      <description>{{ (item.desc | default("")) | escape }}</description>
+      <pubDate>{{ (item.addedAt | default("1970-01-01")) ~ "T00:00:00Z" }}</pubDate>
     </item>
+      {% endif %}
     {% endfor %}
+
   </channel>
 </rss>
-

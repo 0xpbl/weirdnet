@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { spawnSync } from "child_process";
 
-const HOME = "/root/weirdnet.org";
+const HOME = process.env.WEIRDNET_HOME || "/home/weirdnet.org";
 const SRC = "/home/weirdnet/_src";
 
 const JSON_FILE = "/home/weirdnet/_src/data/links.json";

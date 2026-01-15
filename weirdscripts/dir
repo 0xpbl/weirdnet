@@ -2,4 +2,4 @@
 set -euo pipefail
 
 cd /root/weirdnet.org
-exec node /root/weirdnet.org/tools/publish.mjs dir "$@"
+exec node /home/weirdnet/_src/weirdscripts/tools/publish.mjs dir "$@"
