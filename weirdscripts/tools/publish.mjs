@@ -90,6 +90,16 @@ function readJSON(file) {
 }
 
 function writeJSON(file, data) {
+  // Backup automático antes de escrever
+  if (fs.existsSync(file)) {
+    const backupDir = path.join(path.dirname(file), "backups");
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+    }
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    const backupFile = path.join(backupDir, `${path.basename(file)}.bak.${timestamp}`);
+    fs.copyFileSync(file, backupFile);
+  }
   fs.writeFileSync(file, JSON.stringify(data, null, 2) + "\n", "utf8");
 }
 
@@ -371,9 +381,115 @@ function updateJsonFromQueue(mode, queueItems) {
   return { added, updated, total: data.length };
 }
 
+function normalizeDate(dateStr) {
+  // Normalizar addedAt para formato YYYY-MM-DD
+  if (!dateStr) return ymdSaoPauloNow();
+  const str = String(dateStr).trim();
+  // Se já está em formato YYYY-MM-DD, retorna
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+  // Se é ISO format, extrai a data
+  const match = str.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (match) return match[1];
+  // Tenta parsear como Date
+  try {
+    const d = new Date(str);
+    if (Number.isFinite(d.getTime())) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+  } catch {}
+  return ymdSaoPauloNow();
+}
+
+function ensureAllLinksHaveId() {
+  // Garantir que todos os links tenham id (necessário para aparecer no directory)
+  if (!fs.existsSync(JSON_FILE)) {
+    console.log("[fix-ids] links.json não encontrado, pulando correção\n");
+    return;
+  }
+  
+  const data = readJSON(JSON_FILE);
+  const existingIds = new Set();
+  let fixedIdCount = 0;
+  let fixedDateCount = 0;
+  let needsSave = false;
+  let linksWithoutId = 0;
+  let linksWithoutUrlOrTitle = 0;
+  
+  // Coletar todos os ids existentes
+  for (const it of data) {
+    if (it && it.id) existingIds.add(String(it.id).trim());
+  }
+  
+  // Corrigir links que não têm id ou têm addedAt em formato errado
+  for (const link of data) {
+    if (!link) continue;
+    
+    // Normalizar addedAt para formato YYYY-MM-DD
+    const originalDate = link.addedAt;
+    const normalizedDate = normalizeDate(originalDate);
+    if (originalDate !== normalizedDate) {
+      link.addedAt = normalizedDate;
+      fixedDateCount++;
+      needsSave = true;
+    }
+    
+    // Gerar id para links que não têm
+    const currentId = String(link.id || "").trim();
+    if (!currentId) {
+      if (link.url && link.title) {
+        link.id = makeId(link.url, link.title, normalizedDate, existingIds);
+        existingIds.add(link.id);
+        fixedIdCount++;
+        needsSave = true;
+      } else {
+        linksWithoutUrlOrTitle++;
+      }
+      linksWithoutId++;
+    }
+  }
+  
+  if (needsSave) {
+    writeJSON(JSON_FILE, data);
+    if (fixedIdCount > 0) console.log(`[fix-ids] Generated ${fixedIdCount} missing id(s) for links`);
+    if (fixedDateCount > 0) console.log(`[fix-dates] Normalized ${fixedDateCount} date(s) to YYYY-MM-DD format`);
+    if (fixedIdCount > 0 || fixedDateCount > 0) console.log("");
+  }
+  
+  // Validação final: verificar se ainda há links sem id
+  let stillWithoutId = 0;
+  for (const link of data) {
+    if (link && !String(link.id || "").trim() && link.url && link.title) {
+      stillWithoutId++;
+    }
+  }
+  
+  if (stillWithoutId > 0) {
+    console.log(`[WARN] Ainda existem ${stillWithoutId} link(s) sem id após correção`);
+  }
+  
+  if (linksWithoutUrlOrTitle > 0) {
+    console.log(`[WARN] ${linksWithoutUrlOrTitle} link(s) sem url ou title (não podem receber id)`);
+  }
+  
+  // Log de resumo
+  const totalLinks = data.length;
+  const linksWithId = totalLinks - linksWithoutId;
+  console.log(`[fix-ids] Status: ${linksWithId}/${totalLinks} links têm id`);
+  if (linksWithId === totalLinks && fixedIdCount === 0 && fixedDateCount === 0) {
+    console.log("[fix-ids] Todos os links já estão corretos\n");
+  }
+}
+
 function archiveAndClear(mode, txtPath, originalText) {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const out = path.join(HOME, "processed", `${mode}-${stamp}.txt`);
+  const processedDir = path.join(HOME, "processed");
+  if (!fs.existsSync(processedDir)) {
+    fs.mkdirSync(processedDir, { recursive: true });
+  }
+  const out = path.join(processedDir, `${mode}-${stamp}.txt`);
   fs.writeFileSync(out, originalText, "utf8");
   fs.writeFileSync(txtPath, "", "utf8");
 }
@@ -400,6 +516,9 @@ function main() {
   const txtPath = path.join(HOME, mode === "dir" ? "dir.txt" : "links.txt");
   if (!fs.existsSync(txtPath)) fs.writeFileSync(txtPath, "", "utf8");
   const txt = fs.readFileSync(txtPath, "utf8");
+
+  // 0. Garantir que todos os links tenham id (necessário para aparecer no directory)
+  ensureAllLinksHaveId();
 
   ensureRobotsAndSitemapsAndFeeds();
 

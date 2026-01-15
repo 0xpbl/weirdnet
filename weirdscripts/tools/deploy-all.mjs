@@ -9,17 +9,14 @@ const JSON_FILE = path.join(SRC, "data", "links.json");
 
 const DIST_DIR = path.join(SRC, "dist", "directory");
 const DIST_LINKS = path.join(SRC, "dist", "links");
-const DIST_LETTERS = path.join(SRC, "dist", "letters");
 const DIST_HOME = path.join(SRC, "dist", "home");
 
 const DEPLOY_DIR = "/home/weirdnet-directory/htdocs/directory.weirdnet.org";
 const DEPLOY_LINKS = "/home/linksweird/htdocs/links.weirdnet.org";
 const DEPLOY_HOME = "/home/weirdnetorg/htdocs/weirdnet.org";
-const DEPLOY_LETTERS = "/home/weirdnetorg/htdocs/weirdnet.org/letters";
 
 const URL_DIR = "https://directory.weirdnet.org";
 const URL_LINKS = "https://links.weirdnet.org";
-const URL_LETTERS = "https://weirdnet.org/letters";
 const URL_HOME = "https://weirdnet.org";
 
 function die(msg) {
@@ -504,13 +501,18 @@ function normalizeDate(dateStr) {
 
 function ensureAllLinksHaveId() {
   // Garantir que todos os links tenham id (necessário para aparecer no directory)
-  if (!fs.existsSync(JSON_FILE)) return;
+  if (!fs.existsSync(JSON_FILE)) {
+    console.log("[fix-ids] links.json não encontrado, pulando correção\n");
+    return;
+  }
   
   const data = readJSON(JSON_FILE);
   const existingIds = new Set();
   let fixedIdCount = 0;
   let fixedDateCount = 0;
   let needsSave = false;
+  let linksWithoutId = 0;
+  let linksWithoutUrlOrTitle = 0;
   
   // Coletar todos os ids existentes
   for (const it of data) {
@@ -532,11 +534,16 @@ function ensureAllLinksHaveId() {
     
     // Gerar id para links que não têm
     const currentId = String(link.id || "").trim();
-    if (!currentId && link.url && link.title) {
-      link.id = makeId(link.url, link.title, normalizedDate, existingIds);
-      existingIds.add(link.id);
-      fixedIdCount++;
-      needsSave = true;
+    if (!currentId) {
+      if (link.url && link.title) {
+        link.id = makeId(link.url, link.title, normalizedDate, existingIds);
+        existingIds.add(link.id);
+        fixedIdCount++;
+        needsSave = true;
+      } else {
+        linksWithoutUrlOrTitle++;
+      }
+      linksWithoutId++;
     }
   }
   
@@ -545,6 +552,30 @@ function ensureAllLinksHaveId() {
     if (fixedIdCount > 0) console.log(`[fix-ids] Generated ${fixedIdCount} missing id(s) for links`);
     if (fixedDateCount > 0) console.log(`[fix-dates] Normalized ${fixedDateCount} date(s) to YYYY-MM-DD format`);
     if (fixedIdCount > 0 || fixedDateCount > 0) console.log("");
+  }
+  
+  // Validação final: verificar se ainda há links sem id
+  let stillWithoutId = 0;
+  for (const link of data) {
+    if (link && !String(link.id || "").trim() && link.url && link.title) {
+      stillWithoutId++;
+    }
+  }
+  
+  if (stillWithoutId > 0) {
+    console.log(`[WARN] Ainda existem ${stillWithoutId} link(s) sem id após correção`);
+  }
+  
+  if (linksWithoutUrlOrTitle > 0) {
+    console.log(`[WARN] ${linksWithoutUrlOrTitle} link(s) sem url ou title (não podem receber id)`);
+  }
+  
+  // Log de resumo
+  const totalLinks = data.length;
+  const linksWithId = totalLinks - linksWithoutId;
+  console.log(`[fix-ids] Status: ${linksWithId}/${totalLinks} links têm id`);
+  if (linksWithId === totalLinks && fixedIdCount === 0 && fixedDateCount === 0) {
+    console.log("[fix-ids] Todos os links já estão corretos\n");
   }
 }
 
@@ -649,17 +680,13 @@ function main() {
   console.log("[RUN] build links...");
   run("npx", ["@11ty/eleventy", "--config=sites/links/eleventy.config.cjs"], { cwd: SRC });
 
-  console.log("[RUN] build letters...");
-  run("node", ["sites/letters/build.mjs"], { cwd: SRC });
-
   console.log("[RUN] build home...");
   run("node", ["sites/home/build.mjs"], { cwd: SRC });
 
   // 3. Deploy via rsync
-  // IMPORTANTE: Excluir letters do --delete para não remover o diretório letters
   console.log("[RUN] deploy home (rsync)...");
   ensureDeployDir(DEPLOY_HOME);
-  run("rsync", ["-a", "--delete", "--exclude", ".well-known", "--exclude", "letters", `${DIST_HOME}/`, `${DEPLOY_HOME}/`]);
+  run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_HOME}/`, `${DEPLOY_HOME}/`]);
 
   console.log("[RUN] deploy directory (rsync)...");
   ensureDeployDir(DEPLOY_DIR);
@@ -668,10 +695,6 @@ function main() {
   console.log("[RUN] deploy links (rsync)...");
   ensureDeployDir(DEPLOY_LINKS);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LINKS}/`, `${DEPLOY_LINKS}/`]);
-
-  console.log("[RUN] deploy letters (rsync)...");
-  ensureDeployDir(DEPLOY_LETTERS);
-  run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LETTERS}/`, `${DEPLOY_LETTERS}/`]);
 
   // 4. Reload nginx (se flag)
   if (reloadNginx) {
@@ -691,7 +714,6 @@ function main() {
     check200(`${URL_LINKS}/rss.xml`);
     check200(`${URL_LINKS}/atom.xml`);
 
-    check200(`${URL_LETTERS}/`);
     check200(`${URL_HOME}/`);
     check200(`${URL_HOME}/robots.txt`);
   }

@@ -1,14 +1,16 @@
 const fs = require("fs");
+const path = require("path");
 
 module.exports = function () {
-  const file = "/home/weirdnet/_src/data/links.json";
+  const jsonPath = path.resolve(__dirname, "../../../../data/links.json");
+  
+  try {
+    const raw = fs.readFileSync(jsonPath, "utf8");
+    const data = JSON.parse(raw);
 
-  const raw = fs.readFileSync(file, "utf8");
-  const data = JSON.parse(raw);
-
-  if (!Array.isArray(data)) {
-    throw new Error(`Expected an array in ${file}`);
-  }
+    if (!Array.isArray(data)) {
+      return [];
+    }
 
   const normalized = data
     .filter((x) => x && typeof x === "object")
@@ -25,5 +27,9 @@ module.exports = function () {
     .filter((x) => x.id && x.url && x.title && x.isDirectory)
     .sort((a, b) => (b.addedAt || "").localeCompare(a.addedAt || ""));
 
-  return normalized;
+    return normalized;
+  } catch (e) {
+    console.error(`[directory/links.js] Error reading links.json: ${e.message}`);
+    return [];
+  }
 };
