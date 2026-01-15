@@ -29,6 +29,8 @@ sites/letters/content/
 
 # ===== Processed files =====
 weirdscripts/processed/
+weirdscripts/dir.txt
+weirdscripts/links.txt
 
 # ===== OS / editor / IDE =====
 *.swp
