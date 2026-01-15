@@ -405,16 +405,18 @@ function mergeEntry(existing, incoming, mode) {
 }
 
 function updateJsonFromQueue(mode, queueItems) {
-  // SEGURANÇA: Esta função NUNCA remove links existentes, apenas adiciona ou atualiza
+  // SEGURANÇA CRÍTICA: Esta função NUNCA remove links existentes, apenas adiciona ou atualiza
+  // Todos os links que não estão na fila são 100% preservados
   const today = ymdSaoPauloNow();
   const data = readJSON(JSON_FILE);
   const beforeCount = data.length;
+  const beforeUrls = new Set(data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
 
   const existingByUrl = new Map();
   const existingIds = new Set();
 
   // Usar URL normalizada (trim + lowercase) para evitar duplicados
-  // IMPORTANTE: Todos os links existentes são preservados
+  // IMPORTANTE: Todos os links existentes são preservados no Map
   for (const it of data) {
     if (it && it.url) {
       const urlKey = String(it.url).trim().toLowerCase();
@@ -426,7 +428,7 @@ function updateJsonFromQueue(mode, queueItems) {
   let added = 0;
   let updated = 0;
 
-  // Processar apenas itens da fila - links não na fila são preservados
+  // Processar apenas itens da fila - links não na fila são preservados automaticamente
   for (const q of queueItems) {
     const entry = {
       url: q.url.trim(),
@@ -457,9 +459,17 @@ function updateJsonFromQueue(mode, queueItems) {
     }
   }
 
-  // Validação de segurança: garantir que não perdemos links
+  // Validação de segurança CRÍTICA: garantir que não perdemos links
   if (data.length < beforeCount) {
     throw new Error(`[SECURITY] updateJsonFromQueue: Links foram removidos! Antes: ${beforeCount}, Depois: ${data.length}`);
+  }
+
+  // Validação adicional: garantir que todas as URLs originais estão presentes
+  const afterUrls = new Set(data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
+  for (const url of beforeUrls) {
+    if (!afterUrls.has(url)) {
+      throw new Error(`[SECURITY] updateJsonFromQueue: URL única foi removida: ${url}`);
+    }
   }
 
   // sort newest first by addedAt (stable enough)
@@ -506,27 +516,32 @@ function main() {
   const linksTxt = fs.readFileSync(linksTxtPath, "utf8");
 
   // 0. Deduplicar links existentes antes de processar filas
-  // SEGURANÇA: Apenas remove duplicados (mesma URL), nunca links únicos
-  if (fs.existsSync(JSON_FILE)) {
-    const data = readJSON(JSON_FILE);
-    const beforeCount = data.length;
-    const deduplicated = deduplicateLinks(data);
-    
-    // Validação: garantir que não perdemos URLs únicas
-    const beforeUniqueUrls = new Set(data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
-    const afterUniqueUrls = new Set(deduplicated.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
-    
-    if (beforeUniqueUrls.size !== afterUniqueUrls.size) {
-      throw new Error(`[SECURITY] Deduplicação perdeu URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
-    }
-    
-    if (deduplicated.length !== beforeCount) {
-      writeJSON(JSON_FILE, deduplicated);
-      console.log(`[deduplicate] Cleaned ${beforeCount} -> ${deduplicated.length} links (removed duplicates only, preserved ${afterUniqueUrls.size} unique URLs)\n`);
-    }
-  }
+  // DESABILITADO TEMPORARIAMENTE - Apenas remove duplicados (mesma URL), nunca links únicos
+  // if (fs.existsSync(JSON_FILE)) {
+  //   const data = readJSON(JSON_FILE);
+  //   const beforeCount = data.length;
+  //   const deduplicated = deduplicateLinks(data);
+  //   
+  //   // Validação: garantir que não perdemos URLs únicas
+  //   const beforeUniqueUrls = new Set(data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
+  //   const afterUniqueUrls = new Set(deduplicated.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
+  //   
+  //   if (beforeUniqueUrls.size !== afterUniqueUrls.size) {
+  //     throw new Error(`[SECURITY] Deduplicação perdeu URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
+  //   }
+  //   
+  //   if (deduplicated.length !== beforeCount) {
+  //     writeJSON(JSON_FILE, deduplicated);
+  //     console.log(`[deduplicate] Cleaned ${beforeCount} -> ${deduplicated.length} links (removed duplicates only, preserved ${afterUniqueUrls.size} unique URLs)\n`);
+  //   }
+  // }
 
   ensureRobotsAndSitemapsAndFeeds();
+
+  // Verificar estado inicial do JSON
+  const initialData = fs.existsSync(JSON_FILE) ? readJSON(JSON_FILE) : [];
+  const initialCount = initialData.length;
+  console.log(`[INFO] Starting with ${initialCount} links in JSON\n`);
 
   // Processar dir.txt
   const hasDirWork = dirTxt.trim().length > 0;
@@ -535,7 +550,7 @@ function main() {
     const dirStats = updateJsonFromQueue("dir", dirQueue);
     console.log(`\n[OK] Directory JSON updated. added=${dirStats.added} updated=${dirStats.updated} total=${dirStats.total}\n`);
   } else {
-    console.log(`\n[OK] dir.txt is empty. Skipping directory JSON update.\n`);
+    console.log(`\n[OK] dir.txt is empty. Skipping directory JSON update (all ${initialCount} links preserved).\n`);
   }
 
   // Processar links.txt
@@ -545,8 +560,16 @@ function main() {
     const linksStats = updateJsonFromQueue("links", linksQueue);
     console.log(`\n[OK] Links JSON updated. added=${linksStats.added} updated=${linksStats.updated} total=${linksStats.total}\n`);
   } else {
-    console.log(`\n[OK] links.txt is empty. Skipping links JSON update.\n`);
+    console.log(`\n[OK] links.txt is empty. Skipping links JSON update (all ${initialCount} links preserved).\n`);
   }
+
+  // Validação final: garantir que não perdemos links
+  const finalData = readJSON(JSON_FILE);
+  const finalCount = finalData.length;
+  if (finalCount < initialCount) {
+    throw new Error(`[SECURITY] Perda de links detectada! Início: ${initialCount}, Fim: ${finalCount}`);
+  }
+  console.log(`[INFO] All ${finalCount} links preserved after processing queues\n`);
 
   // 2. Build de todos os sites
   console.log("[RUN] build directory...");
