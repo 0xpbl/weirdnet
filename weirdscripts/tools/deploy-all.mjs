@@ -480,6 +480,38 @@ function updateJsonFromQueue(mode, queueItems) {
   return { added, updated, total: data.length };
 }
 
+function ensureAllLinksHaveId() {
+  // Garantir que todos os links tenham id (necessário para aparecer no directory)
+  if (!fs.existsSync(JSON_FILE)) return;
+  
+  const data = readJSON(JSON_FILE);
+  const existingIds = new Set();
+  let fixedCount = 0;
+  let needsSave = false;
+  
+  // Coletar todos os ids existentes
+  for (const it of data) {
+    if (it && it.id) existingIds.add(String(it.id).trim());
+  }
+  
+  // Gerar id para links que não têm
+  for (const link of data) {
+    if (!link) continue;
+    const currentId = String(link.id || "").trim();
+    if (!currentId && link.url && link.title) {
+      link.id = makeId(link.url, link.title, link.addedAt || ymdSaoPauloNow(), existingIds);
+      existingIds.add(link.id);
+      fixedCount++;
+      needsSave = true;
+    }
+  }
+  
+  if (needsSave) {
+    writeJSON(JSON_FILE, data);
+    console.log(`[fix-ids] Generated ${fixedCount} missing id(s) for links\n`);
+  }
+}
+
 function archiveAndClear(mode, txtPath, originalText) {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
   const processedDir = path.join(HOME, "processed");
@@ -514,6 +546,9 @@ function main() {
 
   const dirTxt = fs.readFileSync(dirTxtPath, "utf8");
   const linksTxt = fs.readFileSync(linksTxtPath, "utf8");
+
+  // 0. Garantir que todos os links tenham id (necessário para aparecer no directory)
+  ensureAllLinksHaveId();
 
   // 0. Deduplicar links existentes antes de processar filas
   // DESABILITADO TEMPORARIAMENTE - Apenas remove duplicados (mesma URL), nunca links únicos
