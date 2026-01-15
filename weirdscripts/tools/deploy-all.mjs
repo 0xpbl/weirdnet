@@ -480,13 +480,36 @@ function updateJsonFromQueue(mode, queueItems) {
   return { added, updated, total: data.length };
 }
 
+function normalizeDate(dateStr) {
+  // Normalizar addedAt para formato YYYY-MM-DD
+  if (!dateStr) return ymdSaoPauloNow();
+  const str = String(dateStr).trim();
+  // Se já está em formato YYYY-MM-DD, retorna
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+  // Se é ISO format, extrai a data
+  const match = str.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (match) return match[1];
+  // Tenta parsear como Date
+  try {
+    const d = new Date(str);
+    if (Number.isFinite(d.getTime())) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+  } catch {}
+  return ymdSaoPauloNow();
+}
+
 function ensureAllLinksHaveId() {
   // Garantir que todos os links tenham id (necessário para aparecer no directory)
   if (!fs.existsSync(JSON_FILE)) return;
   
   const data = readJSON(JSON_FILE);
   const existingIds = new Set();
-  let fixedCount = 0;
+  let fixedIdCount = 0;
+  let fixedDateCount = 0;
   let needsSave = false;
   
   // Coletar todos os ids existentes
@@ -494,21 +517,34 @@ function ensureAllLinksHaveId() {
     if (it && it.id) existingIds.add(String(it.id).trim());
   }
   
-  // Gerar id para links que não têm
+  // Corrigir links que não têm id ou têm addedAt em formato errado
   for (const link of data) {
     if (!link) continue;
+    
+    // Normalizar addedAt para formato YYYY-MM-DD
+    const originalDate = link.addedAt;
+    const normalizedDate = normalizeDate(originalDate);
+    if (originalDate !== normalizedDate) {
+      link.addedAt = normalizedDate;
+      fixedDateCount++;
+      needsSave = true;
+    }
+    
+    // Gerar id para links que não têm
     const currentId = String(link.id || "").trim();
     if (!currentId && link.url && link.title) {
-      link.id = makeId(link.url, link.title, link.addedAt || ymdSaoPauloNow(), existingIds);
+      link.id = makeId(link.url, link.title, normalizedDate, existingIds);
       existingIds.add(link.id);
-      fixedCount++;
+      fixedIdCount++;
       needsSave = true;
     }
   }
   
   if (needsSave) {
     writeJSON(JSON_FILE, data);
-    console.log(`[fix-ids] Generated ${fixedCount} missing id(s) for links\n`);
+    if (fixedIdCount > 0) console.log(`[fix-ids] Generated ${fixedIdCount} missing id(s) for links`);
+    if (fixedDateCount > 0) console.log(`[fix-dates] Normalized ${fixedDateCount} date(s) to YYYY-MM-DD format`);
+    if (fixedIdCount > 0 || fixedDateCount > 0) console.log("");
   }
 }
 
