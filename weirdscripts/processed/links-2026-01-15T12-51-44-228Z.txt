@@ -1,0 +1,5 @@
+radio: retro, streaming
+https://poolsuite.net: Poolsuite: summer radio in the browser. very 90s mood.
+
+search: indie, small-web
+https://marginalia-search.com: Marginalia Search: indie search engine for the non-commercial web.

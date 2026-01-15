@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd /root/weirdnet.org
+exec node /root/weirdnet.org/tools/publish.mjs dir "$@"

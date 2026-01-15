@@ -1,0 +1,7 @@
+# category: tag1, tag2, tag-3
+
+net-art: geocities, collage, nostalgia
+https://www.cameronsworld.net: Cameron's World: A massive collage built from archived GeoCities fragments.
+
+archives: bbs, textfiles
+http://textfiles.com: Textfiles.com: BBS-era text files and early internet culture.
