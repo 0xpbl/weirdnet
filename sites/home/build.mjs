@@ -170,6 +170,13 @@ function main() {
 
         <div class="hr"></div>
 
+        <h2>letters</h2>
+        <p class="small">
+          <a href="/letters/">crazy letters &raquo;</a>
+        </p>
+
+        <div class="hr"></div>
+
         <div class="gifs">
           <h2>status</h2>
           <div class="gifbar">

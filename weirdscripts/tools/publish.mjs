@@ -9,16 +9,28 @@ const JSON_FILE = "/home/weirdnet/_src/data/links.json";
 
 const DIST_DIR = "/home/weirdnet/_src/dist/directory";
 const DIST_LINKS = "/home/weirdnet/_src/dist/links";
+const DIST_HOME = "/home/weirdnet/_src/dist/home";
+const DIST_LETTERS = "/home/weirdnet/_src/dist/letters";
 
 const DEPLOY_DIR = "/home/weirdnet-directory/htdocs/directory.weirdnet.org";
 const DEPLOY_LINKS = "/home/linksweird/htdocs/links.weirdnet.org";
+const DEPLOY_HOME = "/home/weirdnetorg/htdocs/weirdnet.org";
+const DEPLOY_LETTERS = "/home/weirdnetorg/htdocs/weirdnet.org/letters";
 
 const URL_DIR = "https://directory.weirdnet.org";
 const URL_LINKS = "https://links.weirdnet.org";
+const URL_LETTERS = "https://weirdnet.org/letters";
 
 function die(msg) {
   console.error(`\n[FAIL] ${msg}\n`);
   process.exit(1);
+}
+
+function ensureDeployDir(dirPath) {
+  // Cria diretório de deploy completo se não existir
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
 }
 
 function run(cmd, args, opts = {}) {
@@ -333,20 +345,34 @@ function mergeEntry(existing, incoming, mode) {
 }
 
 function updateJsonFromQueue(mode, queueItems) {
+  // SEGURANÇA CRÍTICA: Esta função NUNCA remove links existentes, apenas adiciona ou atualiza
+  // Todos os links que não estão na fila são 100% preservados
   const today = ymdSaoPauloNow();
   const data = readJSON(JSON_FILE);
+  
+  // Validação de segurança: capturar estado inicial
+  const beforeCount = data.length;
+  const beforeUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
 
   const existingByUrl = new Map();
   const existingIds = new Set();
 
+  // Usar URL normalizada (trim + lowercase) para evitar duplicados
+  // IMPORTANTE: Todos os links existentes são preservados no Map
   for (const it of data) {
-    if (it && it.url) existingByUrl.set(String(it.url).trim(), it);
+    if (it && it.url) {
+      const urlKey = String(it.url).trim().toLowerCase();
+      existingByUrl.set(urlKey, it);
+    }
     if (it && it.id) existingIds.add(String(it.id).trim());
   }
 
   let added = 0;
   let updated = 0;
 
+  // Processar apenas itens da fila - links não na fila são preservados automaticamente
   for (const q of queueItems) {
     const entry = {
       url: q.url.trim(),
@@ -358,18 +384,37 @@ function updateJsonFromQueue(mode, queueItems) {
       isDirectory: mode === "dir",
     };
 
-    const found = existingByUrl.get(entry.url);
+    // Buscar por URL normalizada
+    const urlKey = entry.url.toLowerCase();
+    const found = existingByUrl.get(urlKey);
     if (found) {
+      // Link existe - apenas atualiza (nunca remove)
       const merged = mergeEntry(found, entry, mode);
       // replace in array by reference
       Object.assign(found, merged);
       updated++;
     } else {
+      // Link novo - adiciona
       entry.id = makeId(entry.url, entry.title, entry.addedAt, existingIds);
       existingIds.add(entry.id);
       data.push(entry);
-      existingByUrl.set(entry.url, entry);
+      existingByUrl.set(urlKey, entry);
       added++;
+    }
+  }
+
+  // Validação de segurança CRÍTICA: garantir que não perdemos links
+  if (data.length < beforeCount) {
+    throw new Error(`[SECURITY] updateJsonFromQueue: Links foram removidos! Antes: ${beforeCount}, Depois: ${data.length}`);
+  }
+
+  // Validação adicional: garantir que todas as URLs originais estão presentes
+  const afterUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
+  for (const url of beforeUrls) {
+    if (!afterUrls.has(url)) {
+      throw new Error(`[SECURITY] updateJsonFromQueue: URL única foi removida: ${url}`);
     }
   }
 
@@ -404,6 +449,7 @@ function normalizeDate(dateStr) {
 }
 
 function ensureAllLinksHaveId() {
+  // SEGURANÇA: Esta função NUNCA remove links, apenas adiciona IDs e normaliza datas
   // Garantir que todos os links tenham id (necessário para aparecer no directory)
   if (!fs.existsSync(JSON_FILE)) {
     console.log("[fix-ids] links.json não encontrado, pulando correção\n");
@@ -411,6 +457,13 @@ function ensureAllLinksHaveId() {
   }
   
   const data = readJSON(JSON_FILE);
+  
+  // Validação de segurança: capturar estado inicial
+  const beforeCount = data.length;
+  const beforeUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
+  
   const existingIds = new Set();
   let fixedIdCount = 0;
   let fixedDateCount = 0;
@@ -424,6 +477,7 @@ function ensureAllLinksHaveId() {
   }
   
   // Corrigir links que não têm id ou têm addedAt em formato errado
+  // IMPORTANTE: Iteramos sobre o array original, apenas modificando propriedades, nunca removendo
   for (const link of data) {
     if (!link) continue;
     
@@ -448,6 +502,21 @@ function ensureAllLinksHaveId() {
         linksWithoutUrlOrTitle++;
       }
       linksWithoutId++;
+    }
+  }
+  
+  // Validação de segurança CRÍTICA: garantir que não perdemos links
+  if (data.length < beforeCount) {
+    throw new Error(`[SECURITY] ensureAllLinksHaveId: Links foram removidos! Antes: ${beforeCount}, Depois: ${data.length}`);
+  }
+  
+  // Validação adicional: garantir que todas as URLs originais estão presentes
+  const afterUrls = new Set(
+    data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean)
+  );
+  for (const url of beforeUrls) {
+    if (!afterUrls.has(url)) {
+      throw new Error(`[SECURITY] ensureAllLinksHaveId: URL única foi removida: ${url}`);
     }
   }
   
@@ -480,6 +549,54 @@ function ensureAllLinksHaveId() {
   console.log(`[fix-ids] Status: ${linksWithId}/${totalLinks} links têm id`);
   if (linksWithId === totalLinks && fixedIdCount === 0 && fixedDateCount === 0) {
     console.log("[fix-ids] Todos os links já estão corretos\n");
+  }
+}
+
+function cleanupLettersRawFiles() {
+  // Limpa arquivos raw (.txt) de sites/letters/content/ após deploy bem-sucedido
+  // IMPORTANTE: Só remove cópias temporárias, mantém arquivos fonte originais em txt/
+  const contentDir = path.join(SRC, "sites", "letters", "content");
+  
+  if (!fs.existsSync(contentDir)) {
+    console.log("[cleanup-letters] Content directory não existe, pulando limpeza");
+    return;
+  }
+
+  // Verificar que dist/letters existe e tem conteúdo
+  if (!fs.existsSync(DIST_LETTERS)) {
+    console.log("[cleanup-letters] dist/letters não existe, NÃO limpando arquivos raw");
+    return;
+  }
+
+  const distFiles = fs.readdirSync(DIST_LETTERS);
+  if (distFiles.length === 0) {
+    console.log("[cleanup-letters] dist/letters está vazio, NÃO limpando arquivos raw");
+    return;
+  }
+
+  // Remover apenas arquivos .txt (cópias temporárias)
+  const contentFiles = fs.readdirSync(contentDir);
+  const txtFiles = contentFiles.filter(f => f.endsWith(".txt"));
+  
+  if (txtFiles.length === 0) {
+    console.log("[cleanup-letters] Nenhum arquivo .txt encontrado para limpar");
+    return;
+  }
+
+  let removedCount = 0;
+  for (const file of txtFiles) {
+    const filePath = path.join(contentDir, file);
+    try {
+      fs.unlinkSync(filePath);
+      removedCount++;
+    } catch (e) {
+      console.error(`[cleanup-letters] Erro ao remover ${file}: ${e.message}`);
+    }
+  }
+
+  if (removedCount > 0) {
+    console.log(`[cleanup-letters] Removidos ${removedCount} arquivo(s) raw de sites/letters/content/`);
+    console.log("[cleanup-letters] Arquivos fonte originais em txt/ foram preservados");
   }
 }
 
@@ -539,12 +656,29 @@ function main() {
   console.log("[RUN] build links...");
   run("npx", ["@11ty/eleventy", "--config=sites/links/eleventy.config.cjs"], { cwd: SRC });
 
+  console.log("[RUN] build home...");
+  run("node", ["sites/home/build.mjs"], { cwd: SRC });
+
+  console.log("[RUN] build letters...");
+  run("node", ["sites/letters/build.mjs"], { cwd: SRC });
+
   // deploy
+  // IMPORTANTE: Deploy home ANTES de letters para não remover o diretório letters com --delete
+  console.log("[RUN] deploy home (rsync)...");
+  ensureDeployDir(DEPLOY_HOME);
+  run("rsync", ["-a", "--delete", "--exclude", ".well-known", "--exclude", "letters", `${DIST_HOME}/`, `${DEPLOY_HOME}/`]);
+
   console.log("[RUN] deploy directory (rsync)...");
+  ensureDeployDir(DEPLOY_DIR);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_DIR}/`, `${DEPLOY_DIR}/`]);
 
   console.log("[RUN] deploy links (rsync)...");
+  ensureDeployDir(DEPLOY_LINKS);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LINKS}/`, `${DEPLOY_LINKS}/`]);
+
+  console.log("[RUN] deploy letters (rsync)...");
+  ensureDeployDir(DEPLOY_LETTERS);
+  run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LETTERS}/`, `${DEPLOY_LETTERS}/`]);
 
   if (reloadNginx) {
     console.log("[RUN] nginx -t && reload...");
@@ -552,6 +686,7 @@ function main() {
     run("systemctl", ["reload", "nginx"]);
   }
 
+  let lettersHealthCheckPassed = false;
   if (!noCheck) {
     console.log("[RUN] health checks (expect 200)...");
     check200(`${URL_DIR}/sitemap.xml`);
@@ -561,6 +696,31 @@ function main() {
     check200(`${URL_LINKS}/robots.txt`);
     check200(`${URL_LINKS}/rss.xml`);
     check200(`${URL_LINKS}/atom.xml`);
+
+    // Health check de letters - se passar, marca como sucesso
+    try {
+      check200(`${URL_LETTERS}/`);
+      lettersHealthCheckPassed = true;
+    } catch (e) {
+      console.error(`[WARN] Health check de letters falhou: ${e.message}`);
+      console.log("[cleanup-letters] Deploy de letters não confirmado, NÃO limpando arquivos raw");
+    }
+  }
+
+  // Limpar arquivos raw de letters APÓS confirmação de deploy bem-sucedido
+  if (lettersHealthCheckPassed || noCheck) {
+    // Se noCheck está ativo, verificar pelo menos que dist/letters existe
+    if (noCheck) {
+      if (fs.existsSync(DIST_LETTERS)) {
+        const distFiles = fs.readdirSync(DIST_LETTERS);
+        if (distFiles.length > 0) {
+          cleanupLettersRawFiles();
+        }
+      }
+    } else {
+      // Se health check passou, limpar arquivos raw
+      cleanupLettersRawFiles();
+    }
   }
 
   // only clear the txt if everything above succeeded

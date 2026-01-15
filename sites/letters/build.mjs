@@ -165,7 +165,7 @@ function renderList(letters) {
       <tr>
         <td valign="top">
           <h1>Letters</h1>
-          <p class="small"><i>...correspondence archive.</i></p>
+          <p class="small"><i>...crazy letters.</i></p>
           <p class="small">
             <a href="/">&laquo; back to home</a>
           </p>
