@@ -41,8 +41,21 @@ function runCapture(cmd, args, opts = {}) {
 }
 
 function ymdSaoPauloNow() {
-  // YYYY-MM-DD
-  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  // YYYY-MM-DD - garantir formato correto independente do ambiente
+  const d = new Date();
+  // Calcular data no timezone de São Paulo (UTC-3)
+  // Obter componentes da data no timezone de São Paulo
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+  const parts = formatter.formatToParts(d);
+  const year = parts.find(p => p.type === "year").value;
+  const month = parts.find(p => p.type === "month").value;
+  const day = parts.find(p => p.type === "day").value;
+  return `${year}-${month}-${day}`;
 }
 
 function slugify(s) {

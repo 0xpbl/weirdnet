@@ -6,7 +6,19 @@ const SRC = process.env.WEIRDNET_SRC || path.resolve(path.join(process.cwd(), ".
 const JSON_FILE = path.join(SRC, "data", "links.json");
 
 function ymdSaoPaulo(date) {
-  return date.toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  // Garantir formato YYYY-MM-DD usando timezone de São Paulo
+  // Usar Intl.DateTimeFormat para garantir formato consistente
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+  const parts = formatter.formatToParts(date);
+  const year = parts.find(p => p.type === "year").value;
+  const month = parts.find(p => p.type === "month").value;
+  const day = parts.find(p => p.type === "day").value;
+  return `${year}-${month}-${day}`;
 }
 
 console.log("[TEST] Testando cálculo de estatísticas...\n");

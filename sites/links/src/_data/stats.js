@@ -1,9 +1,19 @@
 const getLinks = require("./links");
 
 function ymdSaoPaulo(date) {
-  // en-CA => YYYY-MM-DD
-  // Usar a mesma lógica do uni.mjs
-  return date.toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  // Garantir formato YYYY-MM-DD usando timezone de São Paulo
+  // Usar Intl.DateTimeFormat para garantir formato consistente
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+  const parts = formatter.formatToParts(date);
+  const year = parts.find(p => p.type === "year").value;
+  const month = parts.find(p => p.type === "month").value;
+  const day = parts.find(p => p.type === "day").value;
+  return `${year}-${month}-${day}`;
 }
 
 module.exports = function () {
