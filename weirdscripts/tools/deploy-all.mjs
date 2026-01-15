@@ -116,6 +116,60 @@ function writeJSON(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2) + "\n", "utf8");
 }
 
+function deduplicateLinks(data) {
+  // SEGURANÇA: Esta função NUNCA apaga links únicos, apenas remove duplicados (mesma URL)
+  // Agrupa links por URL normalizada (trim, lowercase)
+  const byUrl = new Map();
+  
+  for (const link of data) {
+    if (!link || !link.url) continue;
+    const urlKey = String(link.url).trim().toLowerCase();
+    
+    if (!byUrl.has(urlKey)) {
+      byUrl.set(urlKey, []);
+    }
+    byUrl.get(urlKey).push(link);
+  }
+  
+  // Para cada URL, mantém apenas o registro mais antigo
+  // IMPORTANTE: Links com URLs diferentes (mesmo que similares) são preservados
+  const deduplicated = [];
+  let removedCount = 0;
+  const uniqueUrls = new Set();
+  
+  for (const [urlKey, links] of byUrl.entries()) {
+    if (links.length === 1) {
+      // Link único - SEMPRE preservado
+      deduplicated.push(links[0]);
+      uniqueUrls.add(urlKey);
+    } else {
+      // Duplicados encontrados - mantém apenas o mais antigo
+      // Ordena por addedAt (mais antigo primeiro)
+      links.sort((a, b) => {
+        const dateA = String(a.addedAt || "").trim();
+        const dateB = String(b.addedAt || "").trim();
+        return dateA.localeCompare(dateB);
+      });
+      
+      // Mantém o mais antigo (preserva todos os metadados)
+      deduplicated.push(links[0]);
+      uniqueUrls.add(urlKey);
+      removedCount += links.length - 1;
+    }
+  }
+  
+  // Validação de segurança: garantir que não perdemos URLs únicas
+  if (deduplicated.length < uniqueUrls.size) {
+    throw new Error(`[SECURITY] deduplicateLinks: Perda de links únicos detectada!`);
+  }
+  
+  if (removedCount > 0) {
+    console.log(`[deduplicate] Removed ${removedCount} duplicate link(s) (same URL), preserved ${deduplicated.length} unique links`);
+  }
+  
+  return deduplicated;
+}
+
 function ensureFileIfMissing(filepath, content) {
   if (!fs.existsSync(filepath)) {
     fs.mkdirSync(path.dirname(filepath), { recursive: true });
@@ -322,7 +376,7 @@ function parseQueueFile(text) {
 }
 
 function mergeEntry(existing, incoming, mode) {
-  // mode: "dir" promotes isDirectory true; "links" does NOT demote existing true
+  // mode: "dir" promotes isDirectory true; "links" sets isDirectory false
   const updated = { ...existing };
 
   // always update metadata if provided
@@ -336,29 +390,43 @@ function mergeEntry(existing, incoming, mode) {
     updated.tags = Array.from(set);
   }
 
+  // SEMPRE preservar addedAt original (não sobrescrever com data de hoje)
+  // Só usar incoming.addedAt se o existing não tiver addedAt
   if (!updated.addedAt) updated.addedAt = incoming.addedAt;
 
-  if (mode === "dir") updated.isDirectory = true;
-  else if (updated.isDirectory !== true) updated.isDirectory = false;
+  // Garantir isDirectory correto baseado no mode
+  if (mode === "dir") {
+    updated.isDirectory = true;
+  } else if (mode === "links") {
+    updated.isDirectory = false;
+  }
 
   return updated;
 }
 
 function updateJsonFromQueue(mode, queueItems) {
+  // SEGURANÇA: Esta função NUNCA remove links existentes, apenas adiciona ou atualiza
   const today = ymdSaoPauloNow();
   const data = readJSON(JSON_FILE);
+  const beforeCount = data.length;
 
   const existingByUrl = new Map();
   const existingIds = new Set();
 
+  // Usar URL normalizada (trim + lowercase) para evitar duplicados
+  // IMPORTANTE: Todos os links existentes são preservados
   for (const it of data) {
-    if (it && it.url) existingByUrl.set(String(it.url).trim(), it);
+    if (it && it.url) {
+      const urlKey = String(it.url).trim().toLowerCase();
+      existingByUrl.set(urlKey, it);
+    }
     if (it && it.id) existingIds.add(String(it.id).trim());
   }
 
   let added = 0;
   let updated = 0;
 
+  // Processar apenas itens da fila - links não na fila são preservados
   for (const q of queueItems) {
     const entry = {
       url: q.url.trim(),
@@ -370,19 +438,28 @@ function updateJsonFromQueue(mode, queueItems) {
       isDirectory: mode === "dir",
     };
 
-    const found = existingByUrl.get(entry.url);
+    // Buscar por URL normalizada
+    const urlKey = entry.url.toLowerCase();
+    const found = existingByUrl.get(urlKey);
     if (found) {
+      // Link existe - apenas atualiza (nunca remove)
       const merged = mergeEntry(found, entry, mode);
       // replace in array by reference
       Object.assign(found, merged);
       updated++;
     } else {
+      // Link novo - adiciona
       entry.id = makeId(entry.url, entry.title, entry.addedAt, existingIds);
       existingIds.add(entry.id);
       data.push(entry);
-      existingByUrl.set(entry.url, entry);
+      existingByUrl.set(urlKey, entry);
       added++;
     }
+  }
+
+  // Validação de segurança: garantir que não perdemos links
+  if (data.length < beforeCount) {
+    throw new Error(`[SECURITY] updateJsonFromQueue: Links foram removidos! Antes: ${beforeCount}, Depois: ${data.length}`);
   }
 
   // sort newest first by addedAt (stable enough)
@@ -427,6 +504,27 @@ function main() {
 
   const dirTxt = fs.readFileSync(dirTxtPath, "utf8");
   const linksTxt = fs.readFileSync(linksTxtPath, "utf8");
+
+  // 0. Deduplicar links existentes antes de processar filas
+  // SEGURANÇA: Apenas remove duplicados (mesma URL), nunca links únicos
+  if (fs.existsSync(JSON_FILE)) {
+    const data = readJSON(JSON_FILE);
+    const beforeCount = data.length;
+    const deduplicated = deduplicateLinks(data);
+    
+    // Validação: garantir que não perdemos URLs únicas
+    const beforeUniqueUrls = new Set(data.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
+    const afterUniqueUrls = new Set(deduplicated.map(l => String(l?.url || "").trim().toLowerCase()).filter(Boolean));
+    
+    if (beforeUniqueUrls.size !== afterUniqueUrls.size) {
+      throw new Error(`[SECURITY] Deduplicação perdeu URLs únicas! Antes: ${beforeUniqueUrls.size}, Depois: ${afterUniqueUrls.size}`);
+    }
+    
+    if (deduplicated.length !== beforeCount) {
+      writeJSON(JSON_FILE, deduplicated);
+      console.log(`[deduplicate] Cleaned ${beforeCount} -> ${deduplicated.length} links (removed duplicates only, preserved ${afterUniqueUrls.size} unique URLs)\n`);
+    }
+  }
 
   ensureRobotsAndSitemapsAndFeeds();
 
