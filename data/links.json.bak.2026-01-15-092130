@@ -1245,215 +1245,379 @@
     "addedAt": "2026-01-11",
     "isDirectory": true
   },
-
   {
-    "id": "homeostasislab-course-glitch-108",
     "url": "https://homeostasislab.org/cursos/info/108",
     "title": "Homeostasis Lab (course — glitch)",
     "desc": "Glitch course page at Homeostasis Lab.",
-    "category": "labs",
     "tags": [
       "creative-coding",
       "glitch",
       "learning"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": false
+  },
+  {
+    "url": "https://homeostasislab.org/cursos/info/108",
+    "title": "Homeostasis Lab (course — glitch)",
+    "desc": "Glitch course page at Homeostasis Lab.",
+    "tags": [
+      "creative-coding",
+      "glitch",
+      "learning"
+    ],
+    "category": "net-art",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": true
   },
   {
-    "id": "homeostasislab-processing-example-124",
     "url": "https://homeostasislab.org/cursos/info/124",
     "title": "Homeostasis Lab (Processing example)",
     "desc": "Processing example page at Homeostasis Lab.",
-    "category": "labs",
     "tags": [
       "creative-coding",
       "processing",
       "learning"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": false
+  },
+  {
+    "url": "https://homeostasislab.org/cursos/info/124",
+    "title": "Homeostasis Lab (Processing example)",
+    "desc": "Processing example page at Homeostasis Lab.",
+    "tags": [
+      "creative-coding",
+      "processing",
+      "learning"
+    ],
+    "category": "tools",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": true
   },
   {
-    "id": "homeostasislab-intro-processing-121",
     "url": "https://homeostasislab.org/cursos/info/121",
     "title": "Homeostasis Lab (intro — Processing)",
     "desc": "Intro to Processing at Homeostasis Lab.",
-    "category": "labs",
     "tags": [
       "creative-coding",
       "processing",
       "learning"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": false
+  },
+  {
+    "url": "https://homeostasislab.org/cursos/info/121",
+    "title": "Homeostasis Lab (intro — Processing)",
+    "desc": "Intro to Processing at Homeostasis Lab.",
+    "tags": [
+      "creative-coding",
+      "processing",
+      "learning"
+    ],
+    "category": "tools",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": true
   },
   {
-    "id": "aisthesislab",
     "url": "https://www.aisthesislab.art",
     "title": "Aisthesis Lab",
     "desc": "Art / research lab with digital works.",
-    "category": "labs",
     "tags": [
       "net-art",
       "art",
       "weird"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": false
+  },
+  {
+    "url": "https://www.aisthesislab.art",
+    "title": "Aisthesis Lab",
+    "desc": "Art / research lab with digital works.",
+    "tags": [
+      "net-art",
+      "art",
+      "weird"
+    ],
+    "category": "net-art",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": true
   },
   {
-    "id": "aisthesislab-artists",
     "url": "https://www.aisthesislab.art/artists",
     "title": "Aisthesis Lab — Artists",
     "desc": "Artists index / roster.",
-    "category": "directories",
     "tags": [
       "art",
       "directory",
       "artists"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": false
+  },
+  {
+    "url": "https://www.aisthesislab.art/artists",
+    "title": "Aisthesis Lab — Artists",
+    "desc": "Artists index / roster.",
+    "tags": [
+      "art",
+      "directory",
+      "artists"
+    ],
+    "category": "directories",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": true
   },
   {
-    "id": "processing-download",
     "url": "https://processing.org/download",
     "title": "Processing — Download",
     "desc": "Download Processing.",
-    "category": "tools",
     "tags": [
       "processing",
       "creative-coding",
       "tool"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
   },
   {
-    "id": "processing-tutorials",
+    "url": "https://processing.org/download",
+    "title": "Processing — Download",
+    "desc": "Download Processing.",
+    "tags": [
+      "processing",
+      "creative-coding",
+      "tool"
+    ],
+    "category": "tools",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
+  },
+  {
     "url": "https://processing.org/tutorials/",
     "title": "Processing — Tutorials",
     "desc": "Processing tutorials.",
-    "category": "tools",
     "tags": [
       "processing",
       "creative-coding",
       "tutorials"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
   },
   {
-    "id": "processing-reference",
+    "url": "https://processing.org/tutorials/",
+    "title": "Processing — Tutorials",
+    "desc": "Processing tutorials.",
+    "tags": [
+      "processing",
+      "creative-coding",
+      "tutorials"
+    ],
+    "category": "tools",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
+  },
+  {
     "url": "https://processing.org/reference/",
     "title": "Processing — Reference",
     "desc": "Processing reference.",
-    "category": "tools",
     "tags": [
       "processing",
       "creative-coding",
       "reference"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
   },
   {
-    "id": "p5js",
+    "url": "https://processing.org/reference/",
+    "title": "Processing — Reference",
+    "desc": "Processing reference.",
+    "tags": [
+      "processing",
+      "creative-coding",
+      "reference"
+    ],
+    "category": "tools",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
+  },
+  {
     "url": "https://p5js.org/",
     "title": "p5.js",
     "desc": "p5.js creative coding library.",
-    "category": "tools",
     "tags": [
       "p5js",
       "creative-coding",
       "javascript"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
   },
   {
-    "id": "p5js-reference",
+    "url": "https://p5js.org/",
+    "title": "p5.js",
+    "desc": "p5.js creative coding library.",
+    "tags": [
+      "p5js",
+      "creative-coding",
+      "javascript"
+    ],
+    "category": "tools",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
+  },
+  {
     "url": "https://p5js.org/reference/",
     "title": "p5.js — Reference",
     "desc": "p5.js reference.",
-    "category": "tools",
     "tags": [
       "p5js",
       "creative-coding",
       "reference"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
   },
   {
-    "id": "p5js-web-editor",
+    "url": "https://p5js.org/reference/",
+    "title": "p5.js — Reference",
+    "desc": "p5.js reference.",
+    "tags": [
+      "p5js",
+      "creative-coding",
+      "reference"
+    ],
+    "category": "tools",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
+  },
+  {
     "url": "https://editor.p5js.org/",
     "title": "p5.js — Web Editor",
     "desc": "Online editor for p5.js sketches.",
-    "category": "tools",
     "tags": [
       "p5js",
       "creative-coding",
       "editor"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
   },
   {
-    "id": "lingojam-fancy-text",
+    "url": "https://editor.p5js.org/",
+    "title": "p5.js — Web Editor",
+    "desc": "Online editor for p5.js sketches.",
+    "tags": [
+      "p5js",
+      "creative-coding",
+      "editor"
+    ],
+    "category": "tools",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
+  },
+  {
     "url": "https://lingojam.com/FancyTextGenerator",
     "title": "LingoJam — Fancy Text",
     "desc": "Fancy text generator.",
-    "category": "tools",
     "tags": [
       "text",
       "typography",
       "toy"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
   },
   {
-    "id": "yaytext",
+    "url": "https://lingojam.com/FancyTextGenerator",
+    "title": "LingoJam — Fancy Text",
+    "desc": "Fancy text generator.",
+    "tags": [
+      "text",
+      "typography",
+      "toy"
+    ],
+    "category": "toys",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
+  },
+  {
     "url": "https://yaytext.com/",
     "title": "YayText",
     "desc": "Text styling / generators.",
-    "category": "tools",
     "tags": [
       "text",
       "typography",
       "toy"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
   },
   {
-    "id": "unicode-explorer",
+    "url": "https://yaytext.com/",
+    "title": "YayText",
+    "desc": "Text styling / generators.",
+    "tags": [
+      "text",
+      "typography",
+      "toy"
+    ],
+    "category": "toys",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
+  },
+  {
     "url": "https://unicode-explorer.com/",
     "title": "Unicode Explorer",
     "desc": "Browse Unicode characters.",
-    "category": "tools",
     "tags": [
       "unicode",
       "standards",
       "reference"
     ],
-    "addedAt": "2026-01-15",
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
   },
   {
-    "id": "unicode-compart",
-    "url": "https://www.compart.com/en/unicode",
-    "title": "Unicode — Compart",
-    "desc": "Unicode character database.",
-    "category": "tools",
+    "url": "https://unicode-explorer.com/",
+    "title": "Unicode Explorer",
+    "desc": "Browse Unicode characters.",
     "tags": [
       "unicode",
       "standards",
       "reference"
     ],
-    "addedAt": "2026-01-15",
+    "category": "standards",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
+  },
+  {
+    "url": "https://www.compart.com/en/unicode",
+    "title": "Unicode — Compart",
+    "desc": "Unicode character database.",
+    "tags": [
+      "unicode",
+      "standards",
+      "reference"
+    ],
+    "addedAt": "2026-01-15T12:16:57.869Z",
     "isDirectory": false
+  },
+  {
+    "url": "https://www.compart.com/en/unicode",
+    "title": "Unicode — Compart",
+    "desc": "Unicode character database.",
+    "tags": [
+      "unicode",
+      "standards",
+      "reference"
+    ],
+    "category": "standards",
+    "addedAt": "2026-01-15T12:16:57.869Z",
+    "isDirectory": true
   }
 ]
