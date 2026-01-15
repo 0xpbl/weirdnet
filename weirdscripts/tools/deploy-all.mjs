@@ -455,6 +455,11 @@ function main() {
   run("node", ["sites/home/build.mjs"], { cwd: SRC });
 
   // 3. Deploy via rsync
+  // IMPORTANTE: Deploy home ANTES de letters para não remover o diretório letters com --delete
+  console.log("[RUN] deploy home (rsync)...");
+  ensureDeployDir(DEPLOY_HOME);
+  run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_HOME}/`, `${DEPLOY_HOME}/`]);
+
   console.log("[RUN] deploy directory (rsync)...");
   ensureDeployDir(DEPLOY_DIR);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_DIR}/`, `${DEPLOY_DIR}/`]);
@@ -466,10 +471,6 @@ function main() {
   console.log("[RUN] deploy letters (rsync)...");
   ensureDeployDir(DEPLOY_LETTERS);
   run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_LETTERS}/`, `${DEPLOY_LETTERS}/`]);
-
-  console.log("[RUN] deploy home (rsync)...");
-  ensureDeployDir(DEPLOY_HOME);
-  run("rsync", ["-a", "--delete", "--exclude", ".well-known", `${DIST_HOME}/`, `${DEPLOY_HOME}/`]);
 
   // 4. Reload nginx (se flag)
   if (reloadNginx) {
