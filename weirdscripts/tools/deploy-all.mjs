@@ -103,6 +103,16 @@ function readJSON(file) {
 }
 
 function writeJSON(file, data) {
+  // Backup automático antes de escrever
+  if (fs.existsSync(file)) {
+    const backupDir = path.join(path.dirname(file), "backups");
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+    }
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    const backupFile = path.join(backupDir, `${path.basename(file)}.bak.${timestamp}`);
+    fs.copyFileSync(file, backupFile);
+  }
   fs.writeFileSync(file, JSON.stringify(data, null, 2) + "\n", "utf8");
 }
 
